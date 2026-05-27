@@ -1,5 +1,4 @@
 name: Deploy to College Server
-#hello
 on:
   push:
     branches:
