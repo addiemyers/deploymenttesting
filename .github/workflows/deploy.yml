@@ -18,6 +18,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           # Port 22 is for SFTP. If it fails, try changing it to 21
-          port: 22 
+          port: 21
           # Change this to match the web folder you see on your university account page
           server-dir: ./public_html/
