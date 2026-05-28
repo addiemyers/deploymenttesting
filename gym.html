@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pulse | Tailored Fitness & Wellness Dashboard</title>
+    <title>Pulse | Elite Half-Marathon & Ballet Split</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -14,13 +14,11 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-2">
                     <i data-lucide="activity" class="h-6 w-6 text-indigo-600"></i>
-                    <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">PULSE</span>
+                    <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">PULSE // HYBRID ATHLETE</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span class="text-sm text-slate-500 font-medium">Your Customized Tracker</span>
-                    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
-                        AA
-                    </div>
+                    <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-semibold border border-emerald-200">Goal: 21.1K Half Marathon</span>
+                    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">AA</div>
                 </div>
             </div>
         </div>
@@ -28,31 +26,78 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <div class="flex items-center gap-2 text-indigo-600">
-                <i data-lucide="sliders" class="w-5 h-5"></i>
-                <h2 class="font-bold text-lg text-slate-900">Customization Hub</h2>
+        <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="space-y-2 lg:col-span-2">
+                <div class="flex items-center gap-2 text-indigo-400">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                    <span class="text-xs uppercase font-bold tracking-wider">Runna-Inspired Blueprint</span>
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight">12-Week Half Marathon Program</h1>
+                <p class="text-slate-300 text-sm max-w-xl leading-relaxed">
+                    Based on your 30-min 5K baseline, your training plan shifts weekly to scale aerobic capacity without compromising the ankle mobility and deep intrinsic foot strength required for your Ballet technique.
+                </p>
+                <div class="pt-2 flex items-center gap-4 text-xs font-mono">
+                    <div><span class="text-slate-400">Current Phase:</span> Base Building</div>
+                    <div><span class="text-slate-400">Weekly Mileage:</span> ~18-24 km</div>
+                </div>
             </div>
-            <p class="text-sm text-slate-500">Tailor your routine on the fly. Add an item straight to your custom list below:</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Target Category</label>
-                    <select id="custom-cat" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500">
+            <div class="bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm space-y-2">
+                <h4 class="text-xs uppercase font-bold tracking-wider text-indigo-300">Your Target Pace Blueprint</h4>
+                <div class="space-y-2 text-xs font-mono">
+                    <div class="flex justify-between border-b border-white/5 pb-1">
+                        <span class="text-slate-300">Interval Pace:</span>
+                        <span class="text-emerald-400 font-bold">5:45 - 5:55 /km</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/5 pb-1">
+                        <span class="text-slate-300">Tempo Pace:</span>
+                        <span class="text-amber-400 font-bold">6:15 - 6:30 /km</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-300">Easy / Long Run:</span>
+                        <span class="text-sky-400 font-bold">6:50 - 7:15 /km</span>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-400 italic pt-1">*Calculated from a 6:00/km 5K time trial.</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-2">
+                <div class="flex items-center gap-2 text-indigo-600">
+                    <i data-lucide="sliders" class="w-5 h-5"></i>
+                    <h2 class="font-bold text-base text-slate-900">Customization & Library Injection</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                    <select id="custom-cat" class="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5">
                         <option value="gym-arms">Gym: Arms & Core</option>
                         <option value="gym-legs">Gym: Legs & Core</option>
                         <option value="ballet">Ballet Technique</option>
                     </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Exercise Name</label>
-                    <input id="custom-name" type="text" placeholder="e.g., Hammer Curls, Grand Battement" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500">
-                </div>
-                <div class="flex items-end">
-                    <button onclick="addCustomExercise()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-xl transition-colors flex items-center justify-center gap-1">
-                        <i data-lucide="plus" class="w-4 h-4"></i> Add to Library
+                    <input id="custom-name" type="text" placeholder="Add custom drill..." class="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5">
+                    <button onclick="addCustomExercise()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs rounded-xl transition-colors py-2.5">
+                        Inject to Library
                     </button>
                 </div>
+            </div>
+
+            <div class="border-t lg:border-t-0 lg:border-l border-slate-200 pt-4 lg:pt-0 lg:pl-6 space-y-2">
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Select Training Week</label>
+                <select id="runna-week-selector" onchange="updateRunnaWeek()" class="w-full text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-xl px-3 py-2.5 focus:outline-none">
+                    <option value="1">Week 1: Foundations & Base</option>
+                    <option value="2">Week 2: Increasing Intervals</option>
+                    <option value="3">Week 3: Tempo Integration</option>
+                    <option value="4">Week 4: Peak Base Volume</option>
+                    <option value="5">Week 5: Active Recovery Taper</option>
+                    <option value="6">Week 6: Midpoint Time-Trial</option>
+                    <option value="7">Week 7: Threshold Expansion</option>
+                    <option value="8">Week 8: Peak Long Run (14km)</option>
+                    <option value="9">Week 9: Overload Intervals</option>
+                    <option value="10">Week 10: Peak Endurance (18km)</option>
+                    <option value="11">Week 11: Taper Phase Alpha</option>
+                    <option value="12">Week 12: Race Week Prep</option>
+                </select>
+                <p class="text-[11px] text-slate-400">Changes Wednesday & Sunday schedules instantly.</p>
             </div>
         </div>
 
@@ -60,286 +105,261 @@
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
                     <i data-lucide="calendar" class="text-slate-700"></i>
-                    <h2 class="text-xl font-bold text-slate-900">Your Personalized Weekly Split</h2>
+                    <h2 class="text-xl font-bold text-slate-900">Your Customized Weekly Microcycle</h2>
                 </div>
-                <span class="text-xs text-indigo-600 bg-indigo-50 font-semibold px-3 py-1 rounded-full">Active Plan</span>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-fuchsia-200 transition-all flex flex-col justify-between min-h-[160px]">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between min-h-[165px]">
                     <div>
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Mon</span>
-                        <h4 class="font-bold text-slate-800 mt-1">Ballet</h4>
-                        <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                            <i data-lucide="music" class="w-3 h-3 text-fuchsia-500"></i> Barre & Center
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mon</span>
+                        <h4 class="font-bold text-slate-800 mt-1">Ballet Class</h4>
+                        <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                            <i data-lucide="music" class="w-3 h-3 text-fuchsia-500"></i> Full Barre & Center
                         </p>
                     </div>
-                    <span class="mt-4 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold rounded bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-100">Dance</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-100">Dance Mastery</span>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-amber-200 transition-all flex flex-col justify-between min-h-[160px]">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between min-h-[165px]">
                     <div>
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Tue</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tue</span>
                         <h4 class="font-bold text-slate-800 mt-1">Arms + Core</h4>
-                        <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                            <i data-lucide="dumbbell" class="w-3 h-3 text-amber-500"></i> Upper Body Power
+                        <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                            <i data-lucide="dumbbell" class="w-3 h-3 text-amber-500"></i> Core Stability Anchor
                         </p>
                     </div>
-                    <span class="mt-4 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold rounded bg-amber-50 text-amber-700 border border-amber-100">Gym Strength</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded bg-amber-50 text-amber-700 border border-amber-100">Gym Strength</span>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-emerald-200 transition-all flex flex-col justify-between min-h-[160px]">
+                <div class="bg-emerald-50/40 p-4 rounded-xl border border-emerald-200 shadow-sm flex flex-col justify-between min-h-[165px]">
                     <div>
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Wed</span>
-                        <h4 class="font-bold text-slate-800 mt-1">Running</h4>
-                        <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                            <i data-lucide="zap" class="w-3 h-3 text-emerald-500"></i> Cardio Day 1
+                        <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Wed (Run 1)</span>
+                        <h4 id="wed-run-title" class="font-bold text-slate-900 mt-1">Interval Session</h4>
+                        <p id="wed-run-desc" class="text-[11px] text-slate-600 mt-1 leading-snug">
+                            1km Warmup + 5x 400m at Interval pace (5:45/km). 90s recovery rest blocks.
                         </p>
                     </div>
-                    <span class="mt-4 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold rounded bg-emerald-50 text-emerald-700 border border-emerald-100">Cardio</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-600 text-white">Runna Protocol</span>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-fuchsia-200 transition-all flex flex-col justify-between min-h-[160px]">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between min-h-[165px]">
                     <div>
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Thu</span>
-                        <h4 class="font-bold text-slate-800 mt-1">Ballet</h4>
-                        <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                            <i data-lucide="music" class="w-3 h-3 text-fuchsia-500"></i> Technique / Focus
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Thu</span>
+                        <h4 class="font-bold text-slate-800 mt-1">Ballet Focus</h4>
+                        <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-fuchsia-500"></i> Balance & Allegro
                         </p>
                     </div>
-                    <span class="mt-4 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold rounded bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-100">Dance</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-100">Dance Mastery</span>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-amber-200 transition-all flex flex-col justify-between min-h-[160px]">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between min-h-[165px]">
                     <div>
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Fri</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Fri</span>
                         <h4 class="font-bold text-slate-800 mt-1">Legs + Core</h4>
-                        <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                            <i data-lucide="dumbbell" class="w-3 h-3 text-amber-500"></i> Lower Body Base
+                        <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                            <i data-lucide="shield" class="w-3 h-3 text-amber-700"></i> Knee/Ankle Bulletproofing
                         </p>
                     </div>
-                    <span class="mt-4 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold rounded bg-amber-50 text-amber-700 border border-amber-100">Gym Strength</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded bg-amber-50 text-amber-700 border border-amber-100">Gym Strength</span>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-teal-200 transition-all flex flex-col justify-between min-h-[160px]">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between min-h-[165px]">
                     <div>
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Sat</span>
-                        <h4 class="font-bold text-slate-800 mt-1">Pilates</h4>
-                        <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                            <i data-lucide="sparkles" class="w-3 h-3 text-teal-500"></i> Alignment & Flow
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sat</span>
+                        <h4 class="font-bold text-slate-800 mt-1">Pilates Alignment</h4>
+                        <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                            <i data-lucide="sparkles" class="w-3 h-3 text-teal-500"></i> Pelvic Floor & Spine
                         </p>
                     </div>
-                    <span class="mt-4 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold rounded bg-teal-50 text-teal-700 border border-teal-100">Pilates</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded bg-teal-50 text-teal-700 border border-teal-100">Pilates Core</span>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-teal-200 transition-all flex flex-col justify-between min-h-[160px]">
+                <div class="bg-gradient-to-b from-teal-50/50 to-emerald-50/50 p-4 rounded-xl border border-teal-200 shadow-sm flex flex-col justify-between min-h-[165px]">
                     <div>
-                        <span class="text-xs font-semibold text-slate-400 uppercase">Sun</span>
-                        <h4 class="font-bold text-slate-800 mt-1">Pilates & Run</h4>
-                        <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                            <i data-lucide="zap" class="w-3 h-3 text-emerald-500"></i> Double Focus Day
+                        <span class="text-[10px] font-bold text-teal-700 uppercase tracking-wider">Sun (Run 2 + Core)</span>
+                        <h4 id="sun-run-title" class="font-bold text-slate-900 mt-1">Pilates + Long Run</h4>
+                        <p id="sun-run-desc" class="text-[11px] text-slate-600 mt-1 leading-snug">
+                            30m Mat Pilates + 6km Easy continuous conversational run (7:00/km).
                         </p>
                     </div>
-                    <span class="mt-4 inline-flex items-center justify-center px-2 py-1 text-xs font-semibold rounded bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-800 border border-teal-100">Hybrid Day</span>
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded bg-gradient-to-r from-teal-600 to-emerald-600 text-white">Hybrid Sunday</span>
                 </div>
             </div>
         </section>
 
-        <section class="space-y-4">
-            <div class="flex items-center gap-2">
-                <i data-lucide="bookmark-border" class="text-slate-700"></i>
-                <h2 class="text-xl font-bold text-slate-900">Comprehensive Exercise Library</h2>
+        <section class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="font-bold text-sm text-amber-600 border-b pb-1.5 flex items-center gap-1.5">
+                    <i data-lucide="dumbbell" class="w-4 h-4"></i> Arms & Core (Tue)
+                </h3>
+                <ul id="gym-arms-list" class="space-y-2 text-xs text-slate-600">
+                    <li><strong>DB Arnold Press</strong> <span class="text-slate-400 block">3x10 (Shoulder & upper posturing)</span></li>
+                    <li><strong>Tricep Overhead Extensions</strong> <span class="text-slate-400 block">3x12 (Combats upper barre fatigue)</span></li>
+                    <li><strong>Hammer Curls</strong> <span class="text-slate-400 block">3x12 (Forearm & brachialis build)</span></li>
+                    <li><strong>Hanging Leg Raises</strong> <span class="text-emerald-600 font-medium block">✓ Core Focus (Lower abdominal wall)</span></li>
+                    <li><strong>Pallof Press Holdup</strong> <span class="text-emerald-600 font-medium block">✓ Core Focus (Anti-rotation stability)</span></li>
+                </ul>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center gap-2 text-amber-600 border-b border-slate-100 pb-2">
-                        <i data-lucide="dumbbell" class="w-5 h-5"></i>
-                        <h3 class="font-bold">Gym: Arms & Core</h3>
-                    </div>
-                    <ul id="gym-arms-list" class="space-y-2 text-sm text-slate-600">
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Bicep Curls to Overhead Press</strong> <p class="text-xs text-slate-400">Compound arms</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Tricep Rope Pushdowns</strong> <p class="text-xs text-slate-400">Isolated triceps focus</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Dumbbell Lateral Raises</strong> <p class="text-xs text-slate-400">Deltoid cap styling</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Hanging Knee Raises</strong> <p class="text-xs text-slate-400">Lower abs & core stability</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Plank with Shoulder Taps</strong> <p class="text-xs text-slate-400">Anti-rotational core</p></div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center gap-2 text-amber-700 border-b border-slate-100 pb-2">
-                        <i data-lucide="shield" class="w-5 h-5"></i>
-                        <h3 class="font-bold">Gym: Legs & Core</h3>
-                    </div>
-                    <ul id="gym-legs-list" class="space-y-2 text-sm text-slate-600">
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5 shrink-0"></span>
-                            <div><strong>Goblet Squats</strong> <p class="text-xs text-slate-400">Deep quad & core brace</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5 shrink-0"></span>
-                            <div><strong>Romanian Deadlifts (RDLs)</strong> <p class="text-xs text-slate-400">Hamstring & glute chain</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5 shrink-0"></span>
-                            <div><strong>Bulgarian Split Squats</strong> <p class="text-xs text-slate-400">Unilateral balance</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5 shrink-0"></span>
-                            <div><strong>Ab Wheel Rollouts</strong> <p class="text-xs text-slate-400">High-tension anterior core</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5 shrink-0"></span>
-                            <div><strong>Pallof Press</strong> <p class="text-xs text-slate-400">Oblique stabilization</p></div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center gap-2 text-emerald-600 border-b border-slate-100 pb-2">
-                        <i data-lucide="zap" class="w-5 h-5"></i>
-                        <h3 class="font-bold">Running Workouts</h3>
-                    </div>
-                    <ul class="space-y-2 text-sm text-slate-600">
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Zone 2 Base Run</strong> <p class="text-xs text-slate-400">Aerobic threshold endurance</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Interval Sprint repeats</strong> <p class="text-xs text-slate-400">VO2 max building style</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Tempo Running</strong> <p class="text-xs text-slate-400">Sustained hard effort training</p></div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center gap-2 text-fuchsia-600 border-b border-slate-100 pb-2">
-                        <i data-lucide="music" class="w-5 h-5"></i>
-                        <h3 class="font-bold">Ballet Technique</h3>
-                    </div>
-                    <ul id="ballet-list" class="space-y-2 text-sm text-slate-600">
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Plié & Tendu Sequences</strong> <p class="text-xs text-slate-400">Barre initialization</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Adagio Center Combinations</strong> <p class="text-xs text-slate-400">Controlled fluid extension</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Pirouette & Turn Drills</strong> <p class="text-xs text-slate-400">Rotational core stability</p></div>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 mt-1.5 shrink-0"></span>
-                            <div><strong>Allegro Jump Series</strong> <p class="text-xs text-slate-400">Fast fast-twitch power</p></div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-lg">Hydration Sync</h3>
-                        <p class="text-xs text-slate-500">Crucial for Ballet & Running recovery</p>
-                    </div>
-                    <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="droplet"></i></div>
-                </div>
-                <div class="my-4">
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="font-semibold text-blue-600" id="water-count">1.0L reached</span>
-                        <span class="text-slate-400" id="water-percent">33%</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-3">
-                        <div id="water-bar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 33%"></div>
-                    </div>
-                </div>
-                <button onclick="addWater()" class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium text-sm rounded-xl transition-colors flex items-center justify-center gap-1">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add 250ml
-                </button>
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="font-bold text-sm text-amber-800 border-b pb-1.5 flex items-center gap-1.5">
+                    <i data-lucide="shield" class="w-4 h-4"></i> Legs & Core (Fri)
+                </h3>
+                <ul id="gym-legs-list" class="space-y-2 text-xs text-slate-600">
+                    <li><strong>Goblet Squats</strong> <span class="text-slate-400 block">3x8 (Deep quadriceps & core brace)</span></li>
+                    <li><strong>Romanian Deadlifts</strong> <span class="text-slate-400 block">3x10 (Glute/hamstring propulsion power)</span></li>
+                    <li><strong>Single-Leg Calf Raises</strong> <span class="text-fuchsia-600 font-medium block">★ Ballet Crucial (Ankle resilience)</span></li>
+                    <li><strong>Ab Wheel Rollouts</strong> <span class="text-emerald-600 font-medium block">✓ Core Focus (High extension tension)</span></li>
+                    <li><strong>Weighted Plank Taps</strong> <span class="text-emerald-600 font-medium block">✓ Core Focus (Sustained trunk line)</span></li>
+                </ul>
             </div>
 
-            <div class="bg-gradient-to-br from-teal-600 to-indigo-700 rounded-2xl p-6 text-white shadow-sm flex flex-col justify-between lg:col-span-2">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <h3 class="font-bold text-sm text-fuchsia-600 border-b pb-1.5 flex items-center gap-1.5">
+                    <i data-lucide="music" class="w-4 h-4"></i> Ballet Mechanics (Mon/Thu)
+                </h3>
+                <ul id="ballet-list" class="space-y-2 text-xs text-slate-600">
+                    <li><strong>Plié & Tendu Tracking</strong> <span class="text-slate-400 block">Knee alignment over second toe drills</span></li>
+                    <li><strong>Adagio Fluid Extensions</strong> <span class="text-slate-400 block">Developpé control holding deep core posture</span></li>
+                    <li><strong>Pirouette Rotational Prep</strong> <span class="text-slate-400 block">Spotting drills & tight abdominal engagement</span></li>
+                    <li><strong>Grand Allegro Prep</strong> <span class="text-slate-400 block">Plio-power tracking off both feet</span></li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-900 text-slate-100 p-5 rounded-xl space-y-3 flex flex-col justify-between">
                 <div>
-                    <span class="bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">Crosstraining Insight</span>
-                    <h3 class="text-xl font-bold mt-3">Why your Weekend Pilates matters:</h3>
-                    <p class="text-indigo-100 text-sm mt-2 leading-relaxed">
-                        Your Saturday and Sunday Pilates routines provide targeted deep core stabilization and alignment. This acts as the perfect recovery anchor to enhance your turnout in Monday's Ballet class and stabilizes your pelvis during heavy running sprints.
+                    <h3 class="font-bold text-sm text-teal-400 flex items-center gap-1.5">
+                        <i data-lucide="infinity" class="w-4 h-4"></i> Hybrid Adaptation
+                    </h3>
+                    <p class="text-slate-300 text-[11px] leading-relaxed mt-2">
+                        Running demands rigid sagittal stabilization; Ballet demands expansive transverse turnout. Your weekend Pilates sessions work to link these disciplines together, safeguarding your lower back and hip labrum from overuse injuries.
                     </p>
                 </div>
-                <div class="text-xs text-teal-200 font-mono mt-4">Core work is integrated across all Arm/Leg workout blocks.</div>
+                <div class="bg-white/5 p-2.5 rounded-lg border border-white/10 text-[11px]">
+                    <span class="text-amber-400 font-semibold block">Fuel Strategy:</span> High complex carbohydrate loads on Saturday nights to optimize glycogen stores ahead of Sunday's extended long runs.
+                </div>
             </div>
-        </div>
-
+        </section>
     </main>
 
     <script>
-        // Init icons
+        // Initialize lucide SVGs
         lucide.createIcons();
 
-        // Hydration Logic
-        let waterCount = 1.0;
-        function addWater() {
-            if(waterCount < 3.0) {
-                waterCount += 0.25;
-                document.getElementById('water-count').innerText = waterCount.toFixed(2) + "L reached";
-                const percentage = Math.round((waterCount / 3.0) * 100);
-                document.getElementById('water-percent').innerText = percentage + "%";
-                document.getElementById('water-bar').style.width = percentage + "%";
+        // 12-Week Runna Curriculum Database mapped around standard progression for 30m 5k runner
+        const runnaDatabase = {
+            "1": {
+                wedTitle: "Interval Session (Deliberate Speed)",
+                wedDesc: "1km Easy Warmup + 5x 400m fast intervals at 5:45/km. 90-sec walk recovery intervals.",
+                sunTitle: "Pilates + Easy Base Run",
+                sunDesc: "30m Alignment Mat Pilates + 6km Continuous aerobic run at an easy 7:00/km pace."
+            },
+            "2": {
+                wedTitle: "Interval Session (Volume Jump)",
+                wedDesc: "1km Easy Warmup + 6x 400m intense intervals at 5:40/km. 90-sec active walk recovery.",
+                sunTitle: "Pilates + Long Run Progression",
+                sunDesc: "30m Mat Pilates + 7km Aerobic endurance base building run at a relaxed 7:00/km pace."
+            },
+            "3": {
+                wedTitle: "Tempo Lactate Threshold Day",
+                wedDesc: "1km Warmup + 3km Continuous hard Tempo effort at 6:20/km + 1km Cool-down jog.",
+                sunTitle: "Pilates + Endurance Overload",
+                sunDesc: "30m Mat Pilates + 8km Consistent long run at 7:10/km. Focus entirely on nasal breathing."
+            },
+            "4": {
+                wedTitle: "Mixed Speed Intervals",
+                wedDesc: "1km Warmup + 3x 800m sustained intervals at 5:50/km with 2-min walking recoveries.",
+                sunTitle: "Pilates + Peak Base Block",
+                sunDesc: "30m Mat Pilates + 10km Endurance barrier run at 7:15/km. Practice in-run fluid hydration."
+            },
+            "5": {
+                wedTitle: "Recovery Flush (Taper Week)",
+                wedDesc: "4km Easy recovery cruise at 7:30/km. Focus on relaxed arms and light ankle extensions.",
+                sunTitle: "Pilates + Reduced Long Run",
+                sunDesc: "45m Deep-stretch restorative Pilates + 6km Easy structural leg turnover run at 7:00/km."
+            },
+            "6": {
+                wedTitle: "5K Midpoint Time-Trial",
+                wedDesc: "1.5km Warmup + 5km Race Performance Effort. Goal: Aim to eclipse your 30:00 baseline record!",
+                sunTitle: "Pilates + Mid-Plan Recovery Run",
+                sunDesc: "30m Mat Pilates + 8km Baseline structural run at an easy 7:10/km pace."
+            },
+            "7": {
+                wedTitle: "Lactate Threshold Expansion",
+                wedDesc: "1km Warmup + 4km Extended continuous Tempo at 6:15/km + 1km Cool-down jog.",
+                sunTitle: "Pilates + Double Digit Volume",
+                sunDesc: "30m Mat Pilates + 12km Aerobic capacity build at 7:15/km. Focus on upright posture preservation."
+            },
+            "8": {
+                wedTitle: "Sustained Kilometer Repeats",
+                wedDesc: "1km Warmup + 4x 1km Hard threshold repeats at 5:50/km. 2-min slow walking rest.",
+                sunTitle: "Pilates + Peak Volume Alpha",
+                sunDesc: "30m Mat Pilates + 14km Strategic endurance milestone run at a structural 7:15/km."
+            },
+            "9": {
+                wedTitle: "Speed Endurance Burn",
+                wedDesc: "1km Warmup + 10x 400m Fast high-turnover sprints at 5:35/km. 60-sec walking rests.",
+                sunTitle: "Pilates + Step-Back Long Run",
+                sunDesc: "30m Mat Pilates + 11km Steady zone 2 conversational running at 7:00/km."
+            },
+            "10": {
+                wedTitle: "Peak Cruise Intervals",
+                wedDesc: "1km Warmup + 3x 1.5km Extended threshold blocks at 6:00/km. 3-min slow walking recovery.",
+                sunTitle: "Pilates + Pinnacle Long Run",
+                sunDesc: "20m Activation Pilates + 18km Maximum distance volume milestone at an easy 7:20/km."
+            },
+            "11": {
+                wedTitle: "Championship Taper Intervals",
+                wedDesc: "1km Warmup + 4x 600m Sharpening intervals at 5:40/km. Long 2.5-min structural rests.",
+                sunTitle: "Pilates + Volume Step-Down",
+                sunDesc: "40m Structural stability Pilates + 10km Tapering long run at an easy 7:00/km pace."
+            },
+            "12": {
+                wedTitle: "Race Week Warmup Shakeout",
+                wedDesc: "3km Ultra-easy shakeout jog at 7:30/km + 3x 50-meter light acceleration strides.",
+                sunTitle: "HALF MARATHON RACE DAY!",
+                sunDesc: "Race Morning: 21.1km Event! Stay relaxed, lock into target 6:35-6:45/km goal pace, and finish strong!"
+            }
+        };
+
+        function updateRunnaWeek() {
+            const selectedWeek = document.getElementById('runna-week-selector').value;
+            const data = runnaDatabase[selectedWeek];
+
+            if(data) {
+                // Update Wed UI
+                document.getElementById('wed-run-title').innerText = data.wedTitle;
+                document.getElementById('wed-run-desc').innerText = data.wedDesc;
+                
+                // Update Sun UI
+                document.getElementById('sun-run-title').innerText = data.sunTitle;
+                document.getElementById('sun-run-desc').innerText = data.sunDesc;
             }
         }
 
-        // Customization System: Appending User input straight to the targeted UI library list
+        // Custom list item generation logic 
         function addCustomExercise() {
             const category = document.getElementById('custom-cat').value;
             const inputVal = document.getElementById('custom-name').value.trim();
 
             if(!inputVal) {
-                alert("Please enter an exercise title first!");
+                alert("Please type a drill name first!");
                 return;
             }
 
-            // Select active list container
             let targetListId = "";
-            let dotColor = "";
-            if (category === "gym-arms") { targetListId = "gym-arms-list"; dotColor = "bg-amber-400"; }
-            else if (category === "gym-legs") { targetListId = "gym-legs-list"; dotColor = "bg-amber-600"; }
-            else if (category === "ballet") { targetListId = "ballet-list"; dotColor = "bg-fuchsia-400"; }
+            if (category === "gym-arms") targetListId = "gym-arms-list";
+            else if (category === "gym-legs") targetListId = "gym-legs-list";
+            else if (category === "ballet") targetListId = "ballet-list";
 
             const targetUl = document.getElementById(targetListId);
-            
-            // Build fresh HTML item structures
             const newLi = document.createElement('li');
-            newLi.className = "flex items-start gap-2 animate-fade-in";
-            newLi.innerHTML = `
-                <span class="w-1.5 h-1.5 rounded-full ${dotColor} mt-1.5 shrink-0"></span>
-                <div><strong>${inputVal}</strong> <p class="text-xs text-indigo-500">Custom added</p></div>
-            `;
-            
+            newLi.innerHTML = `<strong>${inputVal}</strong> <span class="text-indigo-500 block">✓ Added Custom Drill</span>`;
             targetUl.appendChild(newLi);
-            document.getElementById('custom-name').value = ""; // Clear input safely
+            
+            document.getElementById('custom-name').value = "";
         }
     </script>
 </body>
