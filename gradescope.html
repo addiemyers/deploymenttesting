@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gradescope Viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:      #0c0c0f;
+    --surface: #141418;
+    --border:  #242430;
+    --accent:  #7c6af7;
+    --green:   #4ade80;
+    --yellow:  #fbbf24;
+    --red:     #f87171;
+    --blue:    #60d9fa;
+    --text:    #e8e6f0;
+    --muted:   #6b6880;
+    --radius:  12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; }
+  .shell { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* header */
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(28px,5vw,44px); letter-spacing: -.02em; }
+  .logo span { color: var(--accent); }
+  .tagline { margin-top: 6px; font-size: 11px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+
+  /* card */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; }
+
+  /* form */
+  .form-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 20px; }
+  .field { margin-bottom: 14px; }
+  label { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type=email], input[type=password], input[type=text], input[type=number] {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; padding: 9px 13px; outline: none;
+    transition: border-color .2s;
+  }
+  input:focus { border-color: var(--accent); }
+
+  /* buttons */
+  .btn { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: #fff; border: none;
+    border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; padding: 9px 20px;
+    cursor: pointer; transition: opacity .15s, transform .1s; }
+  .btn:hover { opacity: .85; }
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-sm { font-size: 12px; padding: 6px 14px; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-weight: 400; }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); opacity: 1; }
+  .btn-danger { background: rgba(248,113,113,.15); color: var(--red); border: 1px solid rgba(248,113,113,.3); }
+  .btn-danger:hover { background: rgba(248,113,113,.25); opacity: 1; }
+
+  /* error */
+  .error { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.3); color: var(--red);
+    border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-top: 14px; display: none; }
+
+  /* semester heading */
+  .sem-heading { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px;
+    color: var(--muted); margin: 32px 0 12px; letter-spacing: .04em; }
+
+  /* course card */
+  .course-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 12px; overflow: hidden; }
+  .course-header { display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; cursor: pointer; transition: background .15s; user-select: none; }
+  .course-header:hover { background: rgba(255,255,255,.02); }
+  .course-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+  .course-badge { display: flex; align-items: center; gap: 12px; }
+  .grade-pct { font-size: 15px; font-weight: 600; }
+  .grade-letter { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
+  .chevron { color: var(--muted); font-size: 12px; transition: transform .2s; }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* grade colours */
+  .ga  { color: var(--green); }
+  .gb  { color: var(--blue); }
+  .gc  { color: var(--yellow); }
+  .gdf { color: var(--red); }
+
+  /* course body */
+  .course-body { display: none; border-top: 1px solid var(--border); padding: 20px; }
+  .course-body.open { display: block; }
+
+  /* metrics row */
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .metric { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+  .metric-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; }
+  .metric-lbl { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+
+  /* manual table */
+  .manual-heading { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+    text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 12px; }
+  .manual-row { display: grid; grid-template-columns: 3fr 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .manual-header { display: grid; grid-template-columns: 3fr 1fr 1fr auto; gap: 8px; margin-bottom: 6px; }
+  .manual-header span { font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+  .add-row { margin-top: 10px; }
+
+  /* spinner */
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(124,106,247,.3); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* loading overlay */
+  #loading { display: none; text-align: center; padding: 48px; color: var(--muted); font-size: 14px; }
+  #loading .spinner { width: 24px; height: 24px; margin-bottom: 12px; display: block; margin: 0 auto 12px; }
+
+  /* top bar */
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .topbar-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; }
+
+  #login-panel, #dashboard-panel { }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header style="margin-bottom:40px">
+    <div class="logo">grade<span>scope</span> viewer</div>
+    <div class="tagline">cumulative grades by semester</div>
+  </header>
+
+  <!-- LOGIN -->
+  <div id="login-panel">
+    <div class="card">
+      <div class="form-title">Sign in to Gradescope</div>
+      <div class="field"><label>Email</label><input type="email" id="email" placeholder="you@college.edu" /></div>
+      <div class="field"><label>Password</label><input type="password" id="password" placeholder="••••••••" /></div>
+      <button class="btn" id="login-btn" onclick="doLogin()">Sign in</button>
+      <div class="error" id="login-error"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard-panel" style="display:none">
+    <div class="topbar">
+      <div class="topbar-title">All Courses</div>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">← Log out</button>
+    </div>
+    <div id="loading">
+      <span class="spinner"></span>
+      Loading all course grades…
+    </div>
+    <div id="courses-container"></div>
+  </div>
+
+</div>
+
+<script>
+const CGI = "gradescope.py";
+
+// ── state ─────────────────────────────────────────────────────────────────────
+let STATE = { courses: [], grades: {}, manual: {} };
+
+// ── helpers ───────────────────────────────────────────────────────────────────
+function gradeClass(pct) {
+  if (pct === null) return "";
+  if (pct >= 90) return "ga";
+  if (pct >= 80) return "gb";
+  if (pct >= 70) return "gc";
+  return "gdf";
+}
+
+function semesterSortKey(sem) {
+  const order = { Spring: 0, Summer: 1, Fall: 2, Winter: 3 };
+  const [season, year] = sem.split(" ");
+  return parseInt(year || 0) * 10 + (order[season] ?? 9);
+}
+
+async function post(params) {
+  const body = new URLSearchParams(params);
+  const res  = await fetch(CGI, { method: "POST", body });
+  return res.json();
+}
+
+// ── login ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const btn   = document.getElementById("login-btn");
+  const err   = document.getElementById("login-error");
+  const email = document.getElementById("email").value.trim();
+  const pass  = document.getElementById("password").value;
+
+  err.style.display = "none";
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Signing in…';
+
+  try {
+    const data = await post({ action: "login", email, password: pass });
+    if (!data.ok) throw new Error(data.error || "Login failed");
+
+    STATE.courses = data.courses;
+    STATE.grades  = data.grades;
+    STATE.manual  = {};
+
+    document.getElementById("login-panel").style.display    = "none";
+    document.getElementById("dashboard-panel").style.display = "";
+    renderDashboard();
+
+  } catch(e) {
+    err.textContent    = e.message;
+    err.style.display  = "block";
+  } finally {
+    btn.disabled      = false;
+    btn.textContent   = "Sign in";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("password").addEventListener("keydown", e => {
+    if (e.key === "Enter") doLogin();
+  });
+});
+
+async function doLogout() {
+  await post({ action: "logout" });
+  document.getElementById("dashboard-panel").style.display = "none";
+  document.getElementById("login-panel").style.display     = "";
+  document.getElementById("courses-container").innerHTML   = "";
+  STATE = { courses: [], grades: {}, manual: {} };
+}
+
+// ── render ────────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const container = document.getElementById("courses-container");
+  container.innerHTML = "";
+
+  // Group by semester
+  const grouped = {};
+  STATE.courses.forEach(c => {
+    (grouped[c.sem] = grouped[c.sem] || []).push(c);
+  });
+
+  const sems = Object.keys(grouped).sort((a, b) => semesterSortKey(b) - semesterSortKey(a));
+
+  sems.forEach(sem => {
+    const semDiv = document.createElement("div");
+    semDiv.innerHTML = `<div class="sem-heading">${sem}</div>`;
+
+    grouped[sem].forEach(c => {
+      semDiv.appendChild(buildCourseCard(c));
+    });
+
+    container.appendChild(semDiv);
+  });
+}
+
+function computeSummary(courseId) {
+  const gs     = STATE.grades[courseId];
+  const manual = STATE.manual[courseId] || [];
+
+  let earned = gs ? gs.earned : 0;
+  let possible = gs ? gs.possible : 0;
+  let count  = gs ? gs.count  : 0;
+
+  manual.forEach(m => {
+    if (m.possible > 0) {
+      earned   += m.earned;
+      possible += m.possible;
+      count    += 1;
+    }
+  });
+
+  if (count === 0) return null;
+  const pct = (earned / possible) * 100;
+  return { earned: earned.toFixed(2), possible: possible.toFixed(2),
+           pct: pct.toFixed(1), letter: letterGrade(pct), count };
+}
+
+function letterGrade(pct) {
+  if (pct >= 93) return "A";
+  if (pct >= 90) return "A−";
+  if (pct >= 87) return "B+";
+  if (pct >= 83) return "B";
+  if (pct >= 80) return "B−";
+  if (pct >= 77) return "C+";
+  if (pct >= 73) return "C";
+  if (pct >= 70) return "C−";
+  if (pct >= 67) return "D+";
+  if (pct >= 63) return "D";
+  if (pct >= 60) return "D−";
+  return "F";
+}
+
+function buildCourseCard(c) {
+  const summary = computeSummary(c.id);
+  const card    = document.createElement("div");
+  card.className = "course-card";
+  card.id        = `card-${c.id}`;
+
+  const cls    = summary ? gradeClass(parseFloat(summary.pct)) : "";
+  const pctStr = summary ? `${summary.pct}%` : "—";
+  const letStr = summary ? summary.letter : "—";
+
+  card.innerHTML = `
+    <div class="course-header" onclick="toggleCard('${c.id}')">
+      <div class="course-name">${c.display}</div>
+      <div class="course-badge">
+        <span class="grade-pct ${cls}">${pctStr}</span>
+        <span class="grade-letter ${cls}">${letStr}</span>
+        <span class="chevron" id="chev-${c.id}">▼</span>
+      </div>
+    </div>
+    <div class="course-body" id="body-${c.id}">
+      ${buildCourseBody(c, summary)}
+    </div>`;
+
+  return card;
+}
+
+function buildCourseBody(c, summary) {
+  if (!summary && !(STATE.manual[c.id] || []).length) {
+    return `
+      <div style="color:var(--muted);font-size:13px;margin-bottom:16px">No graded assignments yet.</div>
+      ${buildManualSection(c.id)}`;
+  }
+
+  const cls = summary ? gradeClass(parseFloat(summary.pct)) : "";
+  return `
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-val ${cls}">${summary ? summary.pct + "%" : "—"}</div>
+        <div class="metric-lbl">Overall</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val">${summary ? summary.earned + " / " + summary.possible : "—"}</div>
+        <div class="metric-lbl">Points</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val">${summary ? summary.count : "—"}</div>
+        <div class="metric-lbl">Graded Items</div>
+      </div>
+    </div>
+    ${buildManualSection(c.id)}`;
+}
+
+function buildManualSection(courseId) {
+  const entries = STATE.manual[courseId] || [];
+  let rows = "";
+  if (entries.length > 0) {
+    rows = `<div class="manual-header">
+      <span>Name</span><span>Earned</span><span>Possible</span><span></span>
+    </div>`;
+    entries.forEach((e, i) => {
+      rows += `
+        <div class="manual-row">
+          <input type="text"   value="${e.name}"     placeholder="e.g. Final Exam"
+                 oninput="updateManual('${courseId}', ${i}, 'name', this.value)" />
+          <input type="number" value="${e.earned}"   min="0" step="1"
+                 oninput="updateManual('${courseId}', ${i}, 'earned', this.value)" />
+          <input type="number" value="${e.possible}" min="0.1" step="1"
+                 oninput="updateManual('${courseId}', ${i}, 'possible', this.value)" />
+          <button class="btn btn-danger btn-sm" onclick="removeManual('${courseId}', ${i})">✕</button>
+        </div>`;
+    });
+  }
+
+  return `
+    <div style="margin-top:4px">
+      <div class="manual-heading">Add Missing Assignments</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">
+        Add grades for exams, papers, or anything not on Gradescope.
+      </div>
+      <div id="manual-rows-${courseId}">${rows}</div>
+      <div class="add-row">
+        <button class="btn btn-ghost btn-sm" onclick="addManual('${courseId}')">＋ Add assignment</button>
+      </div>
+    </div>`;
+}
+
+// ── toggle ────────────────────────────────────────────────────────────────────
+function toggleCard(courseId) {
+  const body = document.getElementById(`body-${courseId}`);
+  const chev = document.getElementById(`chev-${courseId}`);
+  body.classList.toggle("open");
+  chev.classList.toggle("open");
+}
+
+// ── manual entries (client-side only, no CGI round-trip needed) ───────────────
+function addManual(courseId) {
+  if (!STATE.manual[courseId]) STATE.manual[courseId] = [];
+  STATE.manual[courseId].push({ name: "", earned: 0, possible: 100 });
+  refreshCard(courseId);
+}
+
+function removeManual(courseId, idx) {
+  STATE.manual[courseId].splice(idx, 1);
+  refreshCard(courseId);
+}
+
+function updateManual(courseId, idx, field, value) {
+  if (!STATE.manual[courseId]) return;
+  STATE.manual[courseId][idx][field] = field === "name" ? value : parseFloat(value) || 0;
+  // Recompute summary in header without full re-render
+  const summary = computeSummary(courseId);
+  const cls     = summary ? gradeClass(parseFloat(summary.pct)) : "";
+  const badge   = document.querySelector(`#card-${courseId} .course-badge`);
+  if (badge) {
+    badge.querySelector(".grade-pct").textContent  = summary ? summary.pct + "%" : "—";
+    badge.querySelector(".grade-pct").className    = `grade-pct ${cls}`;
+    badge.querySelector(".grade-letter").textContent = summary ? summary.letter : "—";
+    badge.querySelector(".grade-letter").className   = `grade-letter ${cls}`;
+  }
+  // Update metrics
+  const metricsEl = document.querySelector(`#body-${courseId} .metrics`);
+  if (metricsEl && summary) {
+    const vals = metricsEl.querySelectorAll(".metric-val");
+    vals[0].textContent = summary.pct + "%";
+    vals[0].className   = `metric-val ${cls}`;
+    vals[1].textContent = summary.earned + " / " + summary.possible;
+    vals[2].textContent = summary.count;
+  }
+}
+
+function refreshCard(courseId) {
+  const card = document.getElementById(`card-${courseId}`);
+  if (!card) return;
+  const wasOpen = document.getElementById(`body-${courseId}`).classList.contains("open");
+  const c       = STATE.courses.find(x => x.id === courseId);
+  const newCard = buildCourseCard(c);
+  card.replaceWith(newCard);
+  if (wasOpen) {
+    document.getElementById(`body-${courseId}`).classList.add("open");
+    document.getElementById(`chev-${courseId}`).classList.add("open");
+  }
+}
+</script>
+</body>
+</html>
