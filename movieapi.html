@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGI Movie Finder</title>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --accent-color: #e94560;
+            --text-color: #ffffff;
+            --text-muted: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+
+        h1 span {
+            color: var(--accent-color);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--card-bg);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .search-btn {
+            padding: 15px 25px;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .search-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Results Card Styler */
+        .movie-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            text-align: left;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @media (min-width: 500px) {
+            .movie-card { flex-direction: row; }
+        }
+
+        .movie-poster {
+            max-width: 100%;
+            object-fit: cover;
+        }
+
+        @media (min-width: 500px) {
+            .movie-poster { width: 200px; }
+        }
+
+        .movie-details {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .movie-title {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+
+        .movie-meta {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .movie-plot {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: #2e3852;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .error-msg {
+            display: none; /* Hidden by default */
+            background-color: rgba(233, 69, 96, 0.2);
+            border: 1px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 8px;
+            color: #ff6b81;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Popcorn<span>CGI</span></h1>
+        
+        <form id="searchForm" class="search-form">
+            <input 
+                type="text" 
+                id="movieTitle" 
+                class="search-input" 
+                placeholder="Enter movie title (e.g., Interstellar)..." 
+                required
+            >
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+
+        <div id="errorBox" class="error-msg"></div>
+
+        <div id="movieCard" class="movie-card">
+            <img id="moviePoster" src="" alt="Movie Poster" class="movie-poster">
+            <div class="movie-details">
+                <h2 id="cardTitle" class="movie-title"></h2>
+                <div class="movie-meta">
+                    <span id="cardYear" class="badge"></span>
+                    <span id="cardRated" class="badge"></span>
+                    <span id="cardRuntime" class="badge"></span>
+                </div>
+                <p id="cardGenre" style="margin-top: 0; color: #ff6b81; font-size: 0.9rem;"></p>
+                <p id="cardPlot" class="movie-plot"></p>
+                <div id="cardRating" class="rating"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page refresh
+
+            const title = document.getElementById('movieTitle').value;
+            const card = document.getElementById('movieCard');
+            const errorBox = document.getElementById('errorBox');
+
+            // Hide previous results/errors while loading
+            card.style.display = 'none';
+            errorBox.style.display = 'none';
+
+            // Fetch data from your Python CGI API backend
+            fetch(`cgi-bin/movieapi.py?movie_title=${encodeURIComponent(title)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Response === "True") {
+                        // Populate UI elements
+                        document.getElementById('cardTitle').innerText = data.Title || 'N/A';
+                        document.getElementById('cardYear').innerText = data.Year || 'N/A';
+                        document.getElementById('cardRated').innerText = data.Rated || 'N/A';
+                        document.getElementById('cardRuntime').innerText = data.Runtime || 'N/A';
+                        document.getElementById('cardGenre').innerText = data.Genre || 'N/A';
+                        document.getElementById('cardPlot').innerText = data.Plot || 'No plot available.';
+                        document.getElementById('cardRating').innerText = `⭐ ${data.imdbRating || 'N/A'} / 10`;
+                        
+                        // Handle fallback poster if missing
+                        const posterUrl = (data.Poster === "N/A" || !data.Poster) 
+                            ? 'https://via.placeholder.com/300x450?text=No+Poster+Available' 
+                            : data.Poster;
+                        document.getElementById('moviePoster').src = posterUrl;
+
+                        // Show the movie card
+                        card.style.display = 'flex';
+                    } else {
+                        // Show OMDb error message
+                        errorBox.innerText = `Error: ${data.Error || 'Movie not found!'}`;
+                        errorBox.style.display = 'block';
+                    }
+                })
+                .catch(err => {
+                    errorBox.innerText = "Error: Failed to connect to the backend server.";
+                    errorBox.style.display = 'block';
+                    console.error(err);
+                });
+        });
+    </script>
+</body>
+</html>
