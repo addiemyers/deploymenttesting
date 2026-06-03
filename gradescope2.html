@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradescope Viewer</title>
+    <style>
+        :root {
+            --bg:        #f2efe9;
+            --surface:   #faf8f4;
+            --surface2:  #ede9e1;
+            --border:    #ddd8ce;
+            --border2:   #c8c2b6;
+            --accent:    #2d6a4f;
+            --accent-dk: #1f4f3a;
+            --green:     #2d6a4f;
+            --yellow:    #b5820a;
+            --red:       #c0392b;
+            --blue:      #1a6896;
+            --text:      #1a1814;
+            --text2:     #4a4640;
+            --muted:     #9a9590;
+            --radius:    12px;
+            --shadow:    0 1px 4px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,.1), 0 12px 40px rgba(0,0,0,.07);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; min-height: 100vh; font-size: 14px; line-height: 1.6; }
+        .shell { max-width: 780px; margin: 0 auto; padding: 52px 24px 100px; }
+        .logo { font-weight: 800; font-size: clamp(26px,4vw,38px); letter-spacing: -.03em; color: var(--text); }
+        .logo span { color: var(--accent); }
+        .tagline { margin-top: 4px; font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 36px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .form-title { font-weight: 700; font-size: 20px; margin-bottom: 24px; letter-spacing: -.02em; }
+        .field { margin-bottom: 16px; }
+        label { display: block; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; }
+        input[type=email], input[type=password] { width: 100%; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 9px; color: var(--text); font-family: inherit; font-size: 14px; padding: 10px 14px; outline: none; transition: border-color .18s, box-shadow .18s; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,106,79,.12); background: var(--surface); }
+        .btn { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: #fff; border: none; border-radius: 9px; font-family: inherit; font-weight: 600; font-size: 14px; padding: 10px 22px; cursor: pointer; transition: background .15s, transform .1s, box-shadow .15s; box-shadow: 0 2px 8px rgba(45,106,79,.3); }
+        .btn:hover { background: var(--accent-dk); box-shadow: 0 4px 14px rgba(45,106,79,.4); }
+        .btn:active { transform: scale(.98); }
+        .btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+        .btn-sm { font-size: 12px; padding: 7px 14px; }
+        .btn-ghost { background: var(--surface); border: 1.5px solid var(--border2); color: var(--text2); box-shadow: none; font-weight: 500; }
+        .btn-ghost:hover { background: var(--surface2); border-color: rgba(45,106,79,.3); color: var(--text); box-shadow: none; }
+        .error { background: rgba(192,57,43,.06); border: 1px solid rgba(192,57,43,.2); color: var(--red); border-radius: 9px; padding: 10px 14px; font-size: 13px; margin-top: 14px; display: none; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1.5px solid var(--border2); margin-bottom: 4px; }
+        .topbar-title { font-weight: 800; font-size: 20px; letter-spacing: -.03em; }
+        .sem-heading { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 32px 0 10px; display: flex; align-items: center; gap: 10px; }
+        .sem-heading::after { content: ''; flex: 1; height: 1px; background: rgba(45,106,79,.2); }
+        .course-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; overflow: hidden; box-shadow: var(--shadow); transition: box-shadow .2s, border-color .2s, transform .15s; }
+        .course-card:hover { box-shadow: var(--shadow-lg); border-color: rgba(45,106,79,.3); transform: translateY(-1px); }
+        .course-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+        .course-name { font-weight: 600; font-size: 14px; letter-spacing: -.01em; }
+        .course-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .grade-pct { font-size: 13px; font-weight: 600; color: var(--text2); }
+        .grade-letter { font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 6px; letter-spacing: .04em; }
+        .ga  { color: var(--green);  background: rgba(45,106,79,.1);  border: 1px solid rgba(45,106,79,.2); }
+        .gb  { color: var(--blue);   background: rgba(26,104,150,.1); border: 1px solid rgba(26,104,150,.2); }
+        .gc  { color: var(--yellow); background: rgba(181,130,10,.1); border: 1px solid rgba(181,130,10,.2); }
+        .gdf { color: var(--red);    background: rgba(192,57,43,.1);  border: 1px solid rgba(192,57,43,.2); }
+        .grade-pct.ga  { color: var(--green);  background: none; border: none; }
+        .grade-pct.gb  { color: var(--blue);   background: none; border: none; }
+        .grade-pct.gc  { color: var(--yellow); background: none; border: none; }
+        .grade-pct.gdf { color: var(--red);    background: none; border: none; }
+        .open-btn { font-size: 11px; padding: 5px 12px; }
+        .spinner { width: 15px; height: 15px; border: 2px solid rgba(45,106,79,.2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #dashboard-panel { display: none; }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <header style="margin-bottom:40px">
+        <div class="logo">grade<span>scope</span> viewer</div>
+        <div class="tagline">cumulative grades by semester</div>
+    </header>
+
+    <!-- LOGIN -->
+    <div id="login-panel">
+        <div class="card">
+            <div class="form-title">Sign in to Gradescope</div>
+            <div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="you@college.edu" /></div>
+            <div class="field"><label for="password">Password</label><input type="password" id="password" placeholder="••••••••" /></div>
+            <button class="btn" id="login-btn">Sign in</button>
+            <div class="error" id="login-error"></div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-panel">
+        <div class="topbar">
+            <div class="topbar-title">All Courses</div>
+            <button class="btn btn-ghost btn-sm" id="logout-btn">← Log out</button>
+        </div>
+        <div id="courses-container"></div>
+    </div>
+</div>
+
+<script>
+var STATE = { courses: [], grades: {} };
+
+function gradeClass(pct) {
+    if (pct >= 90) return 'ga';
+    if (pct >= 80) return 'gb';
+    if (pct >= 70) return 'gc';
+    return 'gdf';
+}
+function letterGrade(pct) {
+    if (pct >= 93) return 'A';
+    if (pct >= 90) return 'A-';
+    if (pct >= 87) return 'B+';
+    if (pct >= 83) return 'B';
+    if (pct >= 80) return 'B-';
+    if (pct >= 77) return 'C+';
+    if (pct >= 73) return 'C';
+    if (pct >= 70) return 'C-';
+    if (pct >= 67) return 'D+';
+    if (pct >= 63) return 'D';
+    if (pct >= 60) return 'D-';
+    return 'F';
+}
+function semSortKey(sem) {
+    var order = { Spring:0, Summer:1, Fall:2, Winter:3 };
+    var p = sem.split(' ');
+    return parseInt(p[1]||0)*10 + (order[p[0]]!==undefined?order[p[0]]:9);
+}
+
+document.getElementById('login-btn').addEventListener('click', function() {
+    var email = document.getElementById('email').value.trim();
+    var pass  = document.getElementById('password').value;
+    var btn   = document.getElementById('login-btn');
+    var err   = document.getElementById('login-error');
+    err.style.display = 'none';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Signing in…';
+    var params = new URLSearchParams();
+    params.append('action', 'login');
+    params.append('email', email);
+    params.append('password', pass);
+    fetch('/~student89/gradescope2.py', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params })
+    .then(function(r) { if (!r.ok) throw new Error('Network error'); return r.text(); })
+    .then(function(t) {
+        var d = JSON.parse(t);
+        if (!d.ok) throw new Error(d.error||'Login failed');
+        STATE.courses = d.courses;
+        STATE.grades  = d.grades;
+        // Save email for course page
+        sessionStorage.setItem('gs_email', email);
+        document.getElementById('login-panel').style.display    = 'none';
+        document.getElementById('dashboard-panel').style.display = 'block';
+        renderDashboard();
+    })
+    .catch(function(e) { err.textContent = e.message; err.style.display = 'block'; })
+    .finally(function() { btn.disabled = false; btn.textContent = 'Sign in'; });
+});
+
+document.getElementById('password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('login-btn').click();
+});
+
+document.getElementById('logout-btn').addEventListener('click', function() {
+    var params = new URLSearchParams(); params.append('action','logout');
+    fetch('/~student89/gradescope2.py', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params })
+    .then(function() {
+        document.getElementById('dashboard-panel').style.display = 'none';
+        document.getElementById('login-panel').style.display = '';
+        STATE = { courses:[], grades:{} };
+    });
+});
+
+function renderDashboard() {
+    var container = document.getElementById('courses-container');
+    container.innerHTML = '';
+    var grouped = {};
+    STATE.courses.forEach(function(c) { (grouped[c.sem]=grouped[c.sem]||[]).push(c); });
+    var sems = Object.keys(grouped).sort(function(a,b){ return semSortKey(b)-semSortKey(a); });
+    sems.forEach(function(sem) {
+        var wrap = document.createElement('div');
+        var h = document.createElement('div');
+        h.className = 'sem-heading'; h.textContent = sem;
+        wrap.appendChild(h);
+        grouped[sem].forEach(function(c) {
+            var gs  = STATE.grades[c.id];
+            var cls = gs ? gradeClass(gs.pct) : '';
+            var div = document.createElement('div');
+            div.className = 'course-card';
+            div.innerHTML =
+                '<div class="course-row">' +
+                    '<div class="course-name">' + c.display + '</div>' +
+                    '<div class="course-right">' +
+                        (gs ? '<span class="grade-pct '+cls+'">' + gs.pct + '%</span>' +
+                              '<span class="grade-letter '+cls+'">' + gs.letter + '</span>' : '<span style="color:var(--muted)">—</span>') +
+                        '<button class="btn btn-ghost btn-sm open-btn" onclick="openCourse(\''+c.id+'\',\''+encodeURIComponent(c.display)+'\')">View →</button>' +
+                    '</div>' +
+                '</div>';
+            wrap.appendChild(div);
+        });
+        container.appendChild(wrap);
+    });
+}
+
+function openCourse(courseId, displayName) {
+    var url = '/~student89/course2.html?id=' + courseId + '&name=' + displayName;
+    window.open(url, '_blank');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Grades</title>
+    <style>
+        :root {
+            --bg:        #f2efe9;
+            --surface:   #faf8f4;
+            --surface2:  #ede9e1;
+            --border:    #ddd8ce;
+            --border2:   #c8c2b6;
+            --accent:    #2d6a4f;
+            --accent-dk: #1f4f3a;
+            --green:     #2d6a4f;
+            --yellow:    #b5820a;
+            --red:       #c0392b;
+            --blue:      #1a6896;
+            --text:      #1a1814;
+            --text2:     #4a4640;
+            --muted:     #9a9590;
+            --radius:    12px;
+            --shadow:    0 1px 4px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; min-height: 100vh; font-size: 14px; line-height: 1.6; }
+        .shell { max-width: 1100px; margin: 0 auto; padding: 36px 24px 80px; }
+        .topbar { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1.5px solid var(--border2); margin-bottom: 28px; }
+        .back-btn { font-size: 12px; padding: 6px 14px; }
+        .course-title { font-weight: 800; font-size: 22px; letter-spacing: -.03em; flex: 1; }
+        .save-status { font-size: 11px; color: var(--muted); }
+
+        .btn { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; border: none; border-radius: 9px; font-family: inherit; font-weight: 600; font-size: 14px; padding: 9px 20px; cursor: pointer; transition: background .15s, box-shadow .15s; box-shadow: 0 2px 8px rgba(45,106,79,.3); }
+        .btn:hover { background: var(--accent-dk); }
+        .btn:active { transform: scale(.98); }
+        .btn-sm { font-size: 12px; padding: 6px 14px; }
+        .btn-ghost { background: var(--surface); border: 1.5px solid var(--border2); color: var(--text2); box-shadow: none; font-weight: 500; }
+        .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: rgba(45,106,79,.3); box-shadow: none; }
+        .btn-danger { background: rgba(192,57,43,.08); color: var(--red); border: 1.5px solid rgba(192,57,43,.2); box-shadow: none; }
+        .btn-danger:hover { background: rgba(192,57,43,.14); box-shadow: none; }
+
+        /* summary bar */
+        .summary-bar { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+        .summary-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px 20px; box-shadow: var(--shadow); flex: 1; min-width: 140px; }
+        .summary-val { font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
+        .summary-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; margin-top: 2px; }
+        .ga { color: var(--green); } .gb { color: var(--blue); } .gc { color: var(--yellow); } .gdf { color: var(--red); }
+
+        /* two-column layout */
+        .layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+
+        /* left panel — categories */
+        .panel { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+        .panel-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .panel-title { font-weight: 700; font-size: 14px; letter-spacing: -.01em; }
+        .panel-body { padding: 14px; }
+
+        /* category setup */
+        .cat-row { display: grid; grid-template-columns: 1fr 72px auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+        input[type=text], input[type=number] { width: 100%; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 7px; color: var(--text); font-family: inherit; font-size: 13px; padding: 7px 10px; outline: none; transition: border-color .18s; }
+        input:focus { border-color: var(--accent); }
+        .weight-total { font-size: 12px; color: var(--muted); margin: 8px 0 12px; }
+        .weight-total.over { color: var(--red); }
+
+        /* drop zones */
+        .dropzone {
+            border: 2px dashed var(--border2); border-radius: 10px; padding: 10px;
+            min-height: 60px; margin-bottom: 10px; transition: border-color .2s, background .2s;
+        }
+        .dropzone.drag-over { border-color: var(--accent); background: rgba(45,106,79,.05); }
+        .dropzone-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+        .dropzone-label span { color: var(--accent); }
+        .dropzone-hint { font-size: 11px; color: var(--muted); text-align: center; padding: 8px 0; }
+
+        /* assignment chips */
+        .chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 6px; padding: 4px 8px; font-size: 12px;
+            cursor: grab; margin: 3px; user-select: none;
+            transition: box-shadow .15s, border-color .15s;
+            max-width: 100%; overflow: hidden;
+        }
+        .chip:hover { border-color: var(--accent); box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+        .chip.dragging { opacity: .4; }
+        .chip-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+        .chip-score { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+        .chip-remove { color: var(--muted); font-size: 12px; cursor: pointer; flex-shrink: 0; line-height: 1; }
+        .chip-remove:hover { color: var(--red); }
+
+        /* unassigned pool */
+        .pool { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+        .pool-body { padding: 12px; min-height: 80px; }
+
+        /* manual entries */
+        .manual-row { display: grid; grid-template-columns: 1fr 80px 80px auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .manual-hdr { display: grid; grid-template-columns: 1fr 80px 80px auto; gap: 8px; margin-bottom: 6px; }
+        .manual-hdr span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(45,106,79,.2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 40px auto; display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-msg { text-align: center; color: var(--muted); font-size: 13px; padding: 20px; }
+
+        @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="topbar">
+        <button class="btn btn-ghost btn-sm back-btn" onclick="window.close()">← Back</button>
+        <div class="course-title" id="course-title">Loading…</div>
+        <div class="save-status" id="save-status"></div>
+    </div>
+
+    <div id="loading"><span class="spinner"></span><div class="loading-msg">Fetching grades…</div></div>
+    <div id="main" style="display:none">
+
+        <!-- summary -->
+        <div class="summary-bar" id="summary-bar"></div>
+
+        <div class="layout">
+            <!-- LEFT: categories + weights -->
+            <div>
+                <div class="panel" style="margin-bottom:16px">
+                    <div class="panel-header">
+                        <div class="panel-title">Grade Categories</div>
+                        <button class="btn btn-ghost btn-sm" onclick="addCategory()">＋ Add</button>
+                    </div>
+                    <div class="panel-body">
+                        <div id="cat-rows"></div>
+                        <div class="weight-total" id="weight-total">Total: 0%</div>
+                        <div id="dropzones"></div>
+                    </div>
+                </div>
+
+                <!-- manual assignments -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Manual Assignments</div>
+                        <button class="btn btn-ghost btn-sm" onclick="addManual()">＋ Add</button>
+                    </div>
+                    <div class="panel-body">
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Add exams, papers, or anything not on Gradescope. Drag them into a category on the right.</div>
+                        <div class="manual-hdr"><span>Name</span><span>Earned</span><span>Possible</span><span></span></div>
+                        <div id="manual-rows"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: unassigned pool -->
+            <div>
+                <div class="pool">
+                    <div class="panel-header">
+                        <div class="panel-title">Unassigned Assignments</div>
+                        <span style="font-size:11px;color:var(--muted)">Drag into a category</span>
+                    </div>
+                    <div class="pool-body" id="pool"
+                         ondragover="onDragOver(event,'__pool__')"
+                         ondragleave="onDragLeave(event,'__pool__')"
+                         ondrop="onDrop(event,'__pool__')">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── state ─────────────────────────────────────────────────────────────────────
+var COURSE_ID   = '';
+var ASSIGNMENTS = [];   // all from gradescope + manual
+var CATEGORIES  = [];   // [{name, weight}]
+var BUCKETS     = {};   // {catName: [assignment names]}
+var MANUAL      = [];   // [{name, earned, possible}]
+var UNASSIGNED  = [];   // assignment names not in any bucket
+var dragging    = null;
+
+// ── init ──────────────────────────────────────────────────────────────────────
+(function init() {
+    var params  = new URLSearchParams(window.location.search);
+    COURSE_ID   = params.get('id')   || '';
+    var display = decodeURIComponent(params.get('name') || 'Course');
+    document.getElementById('course-title').textContent = display;
+    document.title = display;
+    loadCourseData();
+})();
+
+function post(params) {
+    return fetch('/~student89/gradescope2.py', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(params)
+    }).then(function(r) { return r.text(); }).then(function(t) { return JSON.parse(t); });
+}
+
+function loadCourseData() {
+    post({ action: 'course_data', course_id: COURSE_ID })
+    .then(function(d) {
+        if (!d.ok) { alert('Error: ' + d.error); return; }
+
+        ASSIGNMENTS = d.assignments;
+        var w       = d.weights;
+        CATEGORIES  = w.categories || [];
+        BUCKETS     = w.assignments || {};
+        MANUAL      = w.manual      || [];
+
+        // figure out unassigned
+        var assigned = {};
+        Object.keys(BUCKETS).forEach(function(cat) {
+            (BUCKETS[cat]||[]).forEach(function(n) { assigned[n] = true; });
+        });
+        UNASSIGNED = ASSIGNMENTS.map(function(a) { return a.name; })
+            .filter(function(n) { return !assigned[n]; });
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('main').style.display    = '';
+
+        renderSummary(d.summary);
+        renderAll();
+    })
+    .catch(function(e) { alert('Failed to load: ' + e.message); });
+}
+
+// ── render ────────────────────────────────────────────────────────────────────
+function gradeClass(pct) {
+    if (pct >= 90) return 'ga'; if (pct >= 80) return 'gb';
+    if (pct >= 70) return 'gc'; return 'gdf';
+}
+function letterGrade(pct) {
+    if (pct >= 93) return 'A'; if (pct >= 90) return 'A-';
+    if (pct >= 87) return 'B+'; if (pct >= 83) return 'B';
+    if (pct >= 80) return 'B-'; if (pct >= 77) return 'C+';
+    if (pct >= 73) return 'C'; if (pct >= 70) return 'C-';
+    if (pct >= 67) return 'D+'; if (pct >= 63) return 'D';
+    if (pct >= 60) return 'D-'; return 'F';
+}
+
+function renderSummary(gs) {
+    var bar = document.getElementById('summary-bar');
+    bar.innerHTML = '';
+    if (gs) {
+        var cls = gradeClass(gs.pct);
+        bar.innerHTML =
+            '<div class="summary-card"><div class="summary-val '+cls+'">' + gs.pct + '%</div><div class="summary-lbl">Gradescope Cumulative</div></div>' +
+            '<div class="summary-card"><div class="summary-val">' + gs.earned + ' / ' + gs.possible + '</div><div class="summary-lbl">Points</div></div>' +
+            '<div class="summary-card"><div class="summary-val">' + gs.count + '</div><div class="summary-lbl">Graded Items</div></div>' +
+            '<div class="summary-card" id="weighted-card" style="display:none"><div class="summary-val" id="weighted-val">—</div><div class="summary-lbl">Weighted Grade</div></div>';
+    }
+}
+
+function renderAll() {
+    renderCategories();
+    renderDropzones();
+    renderPool();
+    renderManual();
+    recalcWeighted();
+}
+
+function renderCategories() {
+    var el = document.getElementById('cat-rows');
+    el.innerHTML = '';
+    CATEGORIES.forEach(function(cat, i) {
+        var row = document.createElement('div');
+        row.className = 'cat-row';
+        row.innerHTML =
+            '<input type="text" value="'+escHtml(cat.name)+'" placeholder="Category name"' +
+                ' oninput="updateCatName('+i+',this.value)" />' +
+            '<input type="number" value="'+cat.weight+'" min="0" max="100" step="5" placeholder="%"' +
+                ' oninput="updateCatWeight('+i+',this.value)" />' +
+            '<button class="btn btn-danger btn-sm" onclick="removeCategory('+i+')">✕</button>';
+        el.appendChild(row);
+    });
+    var total = CATEGORIES.reduce(function(s,c){ return s + (parseFloat(c.weight)||0); }, 0);
+    var tw = document.getElementById('weight-total');
+    tw.textContent = 'Total: ' + total.toFixed(0) + '%';
+    tw.className   = 'weight-total' + (total > 100 ? ' over' : '');
+}
+
+function renderDropzones() {
+    var el = document.getElementById('dropzones');
+    el.innerHTML = '';
+    CATEGORIES.forEach(function(cat) {
+        var catAssignments = (BUCKETS[cat.name] || []);
+        var totalE = 0, totalP = 0;
+        catAssignments.forEach(function(name) {
+            var a = findAssignment(name);
+            if (a) { totalE += a.earned; totalP += a.possible; }
+        });
+        var catPct = totalP > 0 ? (totalE/totalP*100).toFixed(1)+'%' : '—';
+
+        var dz = document.createElement('div');
+        dz.className  = 'dropzone';
+        dz.id         = 'dz-' + safeName(cat.name);
+        dz.setAttribute('data-cat', cat.name);
+        dz.ondragover  = function(e) { onDragOver(e, cat.name); };
+        dz.ondragleave = function(e) { onDragLeave(e, cat.name); };
+        dz.ondrop      = function(e) { onDrop(e, cat.name); };
+
+        var chips = catAssignments.map(function(name) {
+            return buildChip(name, cat.name);
+        }).join('');
+
+        dz.innerHTML =
+            '<div class="dropzone-label">' + escHtml(cat.name) + ' (' + cat.weight + '%)<span>' + catPct + '</span></div>' +
+            (chips || '<div class="dropzone-hint">Drop assignments here</div>') ;
+        el.appendChild(dz);
+    });
+}
+
+function renderPool() {
+    var pool = document.getElementById('pool');
+    // unassigned gradescope assignments
+    var chips = UNASSIGNED.map(function(name) { return buildChip(name, '__pool__'); }).join('');
+    pool.innerHTML = chips || '<div class="dropzone-hint" style="padding:20px">All assignments have been categorized!</div>';
+}
+
+function renderManual() {
+    var el = document.getElementById('manual-rows');
+    el.innerHTML = '';
+    MANUAL.forEach(function(m, i) {
+        var row = document.createElement('div');
+        row.className = 'manual-row';
+        row.innerHTML =
+            '<input type="text" value="'+escHtml(m.name)+'" placeholder="e.g. Final Exam"' +
+                ' oninput="updateManual('+i+',\'name\',this.value)" />' +
+            '<input type="number" value="'+m.earned+'" min="0" step="1"' +
+                ' oninput="updateManual('+i+',\'earned\',this.value)" />' +
+            '<input type="number" value="'+m.possible+'" min="0.1" step="1"' +
+                ' oninput="updateManual('+i+',\'possible\',this.value)" />' +
+            '<button class="btn btn-danger btn-sm" onclick="removeManual('+i+')">✕</button>';
+        el.appendChild(row);
+    });
+}
+
+function buildChip(name, fromCat) {
+    var a    = findAssignment(name);
+    var score = a ? (a.earned + '/' + a.possible) : '';
+    return '<div class="chip" draggable="true" data-name="'+escAttr(name)+'" data-from="'+escAttr(fromCat)+'"' +
+        ' ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">' +
+        '<span class="chip-name" title="'+escAttr(name)+'">'+escHtml(name)+'</span>' +
+        (score ? '<span class="chip-score">'+score+'</span>' : '') +
+        '<span class="chip-remove" onclick="removeFromCat(\''+escAttr(fromCat)+'\',\''+escAttr(name)+'\')">×</span>' +
+        '</div>';
+}
+
+// ── drag & drop ───────────────────────────────────────────────────────────────
+function onDragStart(e) {
+    dragging = { name: e.target.getAttribute('data-name'), from: e.target.getAttribute('data-from') };
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnd(e) { e.target.classList.remove('dragging'); dragging = null; }
+
+function onDragOver(e, cat) {
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    var el = cat === '__pool__' ? document.getElementById('pool') : document.getElementById('dz-'+safeName(cat));
+    if (el) el.classList.add('drag-over');
+}
+function onDragLeave(e, cat) {
+    var el = cat === '__pool__' ? document.getElementById('pool') : document.getElementById('dz-'+safeName(cat));
+    if (el) el.classList.remove('drag-over');
+}
+function onDrop(e, toCat) {
+    e.preventDefault();
+    var el = toCat === '__pool__' ? document.getElementById('pool') : document.getElementById('dz-'+safeName(toCat));
+    if (el) el.classList.remove('drag-over');
+    if (!dragging) return;
+
+    var name = dragging.name;
+    var from = dragging.from;
+    if (from === toCat) return;
+
+    // Remove from source
+    if (from === '__pool__') {
+        UNASSIGNED = UNASSIGNED.filter(function(n){ return n !== name; });
+    } else {
+        BUCKETS[from] = (BUCKETS[from]||[]).filter(function(n){ return n !== name; });
+    }
+
+    // Add to destination
+    if (toCat === '__pool__') {
+        UNASSIGNED.push(name);
+    } else {
+        if (!BUCKETS[toCat]) BUCKETS[toCat] = [];
+        BUCKETS[toCat].push(name);
+    }
+
+    renderDropzones();
+    renderPool();
+    recalcWeighted();
+    scheduleSave();
+}
+
+function removeFromCat(cat, name) {
+    if (cat === '__pool__') return;
+    BUCKETS[cat] = (BUCKETS[cat]||[]).filter(function(n){ return n !== name; });
+    UNASSIGNED.push(name);
+    renderDropzones();
+    renderPool();
+    recalcWeighted();
+    scheduleSave();
+}
+
+// ── categories ────────────────────────────────────────────────────────────────
+function addCategory() {
+    CATEGORIES.push({ name: 'New Category', weight: 0 });
+    renderAll();
+    scheduleSave();
+}
+function removeCategory(i) {
+    var cat = CATEGORIES[i];
+    // Return its assignments to pool
+    (BUCKETS[cat.name]||[]).forEach(function(n){ UNASSIGNED.push(n); });
+    delete BUCKETS[cat.name];
+    CATEGORIES.splice(i, 1);
+    renderAll();
+    scheduleSave();
+}
+function updateCatName(i, val) {
+    var old = CATEGORIES[i].name;
+    CATEGORIES[i].name = val;
+    // Migrate bucket
+    if (BUCKETS[old]) { BUCKETS[val] = BUCKETS[old]; delete BUCKETS[old]; }
+    renderDropzones();
+    recalcWeighted();
+    scheduleSave();
+}
+function updateCatWeight(i, val) {
+    CATEGORIES[i].weight = parseFloat(val) || 0;
+    renderCategories();
+    recalcWeighted();
+    scheduleSave();
+}
+
+// ── manual ────────────────────────────────────────────────────────────────────
+function addManual() {
+    MANUAL.push({ name: '', earned: 0, possible: 100 });
+    renderManual();
+    scheduleSave();
+}
+function removeManual(i) {
+    MANUAL.splice(i, 1);
+    renderManual();
+    recalcWeighted();
+    scheduleSave();
+}
+function updateManual(i, field, val) {
+    MANUAL[i][field] = field === 'name' ? val : parseFloat(val)||0;
+    recalcWeighted();
+    scheduleSave();
+}
+
+// ── weighted grade calc ───────────────────────────────────────────────────────
+function recalcWeighted() {
+    var card = document.getElementById('weighted-card');
+    var val  = document.getElementById('weighted-val');
+    if (!card) return;
+
+    var validCats = CATEGORIES.filter(function(c){ return c.name && c.weight > 0; });
+    if (!validCats.length) { card.style.display = 'none'; return; }
+
+    var included = [];
+    validCats.forEach(function(cat) {
+        var names = BUCKETS[cat.name] || [];
+        var earned = 0, possible = 0;
+
+        // gradescope assignments
+        names.forEach(function(name) {
+            var a = findAssignment(name);
+            if (a) { earned += a.earned; possible += a.possible; }
+        });
+
+        // manual assignments assigned to this category (by name match — manual entries dragged in)
+        MANUAL.forEach(function(m) {
+            if ((BUCKETS[cat.name]||[]).indexOf(m.name) > -1 && m.possible > 0) {
+                earned += m.earned; possible += m.possible;
+            }
+        });
+
+        if (possible > 0) {
+            included.push({ weight: cat.weight, pct: (earned/possible)*100 });
+        }
+    });
+
+    if (!included.length) { card.style.display = 'none'; return; }
+
+    var totalW = included.reduce(function(s,x){ return s+x.weight; }, 0);
+    var wpct   = included.reduce(function(s,x){ return s + (x.weight/totalW)*x.pct; }, 0);
+    var cls    = gradeClass(wpct);
+
+    card.style.display = '';
+    val.textContent    = wpct.toFixed(1) + '% — ' + letterGrade(wpct);
+    val.className      = 'summary-val ' + cls;
+}
+
+// ── save ──────────────────────────────────────────────────────────────────────
+var saveTimer = null;
+function scheduleSave() {
+    clearTimeout(saveTimer);
+    document.getElementById('save-status').textContent = 'Saving…';
+    saveTimer = setTimeout(doSave, 1200);
+}
+function doSave() {
+    var data = { categories: CATEGORIES, assignments: BUCKETS, manual: MANUAL };
+    post({ action: 'save_weights', course_id: COURSE_ID, data: JSON.stringify(data) })
+    .then(function(d) {
+        document.getElementById('save-status').textContent = d.ok ? '✓ Saved' : '⚠ Save failed';
+        setTimeout(function(){ document.getElementById('save-status').textContent=''; }, 2000);
+    });
+}
+
+// ── utils ─────────────────────────────────────────────────────────────────────
+function findAssignment(name) {
+    for (var i=0; i<ASSIGNMENTS.length; i++) { if (ASSIGNMENTS[i].name===name) return ASSIGNMENTS[i]; }
+    for (var j=0; j<MANUAL.length; j++)      { if (MANUAL[j].name===name)      return MANUAL[j]; }
+    return null;
+}
+function safeName(s) { return s.replace(/[^a-zA-Z0-9]/g,'_'); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+</script>
+</body>
+</html>
