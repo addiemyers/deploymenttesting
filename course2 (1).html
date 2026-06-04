@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Grades</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg:        #f2efe9;
+            --surface:   #faf8f4;
+            --surface2:  #ede9e1;
+            --border:    #ddd8ce;
+            --border2:   #c8c2b6;
+            --accent:    #2d6a4f;
+            --accent-dk: #1f4f3a;
+            --green:     #2d6a4f;
+            --yellow:    #b5820a;
+            --red:       #c0392b;
+            --blue:      #1a6896;
+            --text:      #1a1814;
+            --text2:     #4a4640;
+            --muted:     #9a9590;
+            --radius:    12px;
+            --shadow:    0 1px 4px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; font-size: 14px; line-height: 1.6; }
+        .shell { max-width: 1300px; margin: 0 auto; padding: 32px 24px 80px; }
+
+        /* topbar */
+        .topbar { display: flex; align-items: center; gap: 14px; padding-bottom: 18px; border-bottom: 1.5px solid var(--border2); margin-bottom: 24px; }
+        .course-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 22px; flex: 1; }
+        .save-status { font-size: 11px; color: var(--muted); }
+        .alien { font-size: 28px; user-select: none; }
+
+        /* buttons */
+        .btn { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: inherit; font-weight: 600; font-size: 13px; padding: 8px 18px; cursor: pointer; transition: background .15s, box-shadow .15s; box-shadow: 0 2px 8px rgba(45,106,79,.25); }
+        .btn:hover { background: var(--accent-dk); }
+        .btn:active { transform: scale(.98); }
+        .btn-sm { font-size: 12px; padding: 5px 12px; }
+        .btn-ghost { background: var(--surface); border: 1.5px solid var(--border2); color: var(--text2); box-shadow: none; font-weight: 500; }
+        .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: rgba(45,106,79,.3); box-shadow: none; }
+        .btn-danger { background: rgba(192,57,43,.08); color: var(--red); border: 1.5px solid rgba(192,57,43,.2); box-shadow: none; }
+        .btn-danger:hover { background: rgba(192,57,43,.14); box-shadow: none; }
+
+        /* summary */
+        .summary-bar { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+        .summary-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px 18px; box-shadow: var(--shadow); flex: 1; min-width: 120px; }
+        .summary-val { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 22px; }
+        .summary-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; margin-top: 2px; }
+        .ga { color: var(--green); } .gb { color: var(--blue); } .gc { color: var(--yellow); } .gdf { color: var(--red); }
+
+        /* three-column layout: pool | categories | manual */
+        .layout { display: grid; grid-template-columns: 1fr 380px 280px; gap: 16px; align-items: start; }
+
+        /* panels */
+        .panel { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 0; }
+        .panel-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .panel-title { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 15px; }
+        .panel-body { padding: 12px; }
+
+        /* pool */
+        .pool-body { padding: 12px; min-height: 100px; }
+        .chip-pool { display: flex; flex-wrap: wrap; gap: 4px; }
+
+        /* categories panel — scrollable so it doesn't push page down */
+        .cats-body { padding: 12px; max-height: calc(100vh - 280px); overflow-y: auto; }
+
+        /* category input row */
+        .cat-row { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+        .cat-name-input {
+            flex: 1; min-width: 0;
+            background: var(--bg); border: 1.5px solid var(--border2);
+            border-radius: 7px; color: var(--text); font-family: inherit;
+            font-size: 13px; padding: 6px 10px; outline: none;
+            transition: border-color .18s;
+        }
+        .cat-name-input:focus { border-color: var(--accent); }
+        .cat-weight-wrap {
+            display: flex; align-items: center;
+            background: var(--bg); border: 1.5px solid var(--border2);
+            border-radius: 7px; overflow: hidden; flex-shrink: 0; width: 68px;
+            transition: border-color .18s;
+        }
+        .cat-weight-wrap:focus-within { border-color: var(--accent); }
+        .cat-weight-input {
+            width: 44px; border: none; background: transparent;
+            color: var(--text); font-family: inherit; font-size: 13px;
+            padding: 6px 2px 6px 8px; outline: none;
+            /* allow free typing — no spinner */
+            -moz-appearance: textfield;
+        }
+        .cat-weight-input::-webkit-outer-spin-button,
+        .cat-weight-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .cat-pct-sym { font-size: 13px; color: var(--muted); padding-right: 6px; }
+        .weight-total { font-size: 11px; color: var(--muted); margin: 4px 0 10px; }
+        .weight-total.over { color: var(--red); font-weight: 600; }
+
+        /* dropzones inside category panel */
+        .dropzone {
+            border: 2px dashed var(--border2); border-radius: 8px;
+            padding: 8px 10px; margin-bottom: 8px;
+            transition: border-color .2s, background .2s; min-height: 52px;
+        }
+        .dropzone.drag-over { border-color: var(--accent); background: rgba(45,106,79,.05); }
+        .dropzone-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .08em; color: var(--muted); margin-bottom: 5px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .dropzone-label span { color: var(--accent); }
+        .dropzone-chips { display: flex; flex-wrap: wrap; gap: 3px; min-height: 24px; }
+        .dropzone-hint { font-size: 11px; color: var(--muted); }
+
+        /* manual panel */
+        .manual-body { padding: 12px; }
+        .manual-row { display: grid; grid-template-columns: 1fr 56px 56px auto; gap: 6px; align-items: center; margin-bottom: 6px; }
+        .manual-hdr { display: grid; grid-template-columns: 1fr 56px 56px auto; gap: 6px; margin-bottom: 5px; }
+        .manual-hdr span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; }
+        .manual-input {
+            width: 100%; background: var(--bg); border: 1.5px solid var(--border2);
+            border-radius: 7px; color: var(--text); font-family: inherit;
+            font-size: 12px; padding: 5px 8px; outline: none;
+            transition: border-color .18s;
+            -moz-appearance: textfield;
+        }
+        .manual-input::-webkit-outer-spin-button,
+        .manual-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .manual-input:focus { border-color: var(--accent); }
+
+        /* chips */
+        .chip {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 5px; padding: 3px 7px; font-size: 11px;
+            cursor: grab; user-select: none;
+            transition: box-shadow .15s, border-color .15s, opacity .15s;
+            max-width: 240px;
+        }
+        .chip:hover { border-color: var(--accent); box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+        .chip.dragging { opacity: .3; cursor: grabbing; }
+        .chip-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .chip-score { font-size: 10px; color: var(--muted); flex-shrink: 0; white-space: nowrap; }
+        .chip-x { color: var(--muted); font-size: 12px; cursor: pointer; flex-shrink: 0; line-height: 1; }
+        .chip-x:hover { color: var(--red); }
+        .chip-manual { border-color: rgba(45,106,79,.35); background: rgba(45,106,79,.07); }
+
+        .spinner { width: 22px; height: 22px; border: 2px solid rgba(45,106,79,.2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 48px auto; display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-msg { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .cats-body { max-height: none; } }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="topbar">
+        <button class="btn btn-ghost btn-sm" id="back-btn">← Back</button>
+        <div class="course-title" id="course-title">Loading…</div>
+        <div class="save-status" id="save-status"></div>
+        <div class="alien">👾</div>
+    </div>
+
+    <div id="loading"><span class="spinner"></span><div class="loading-msg">Fetching grades…</div></div>
+
+    <div id="main" style="display:none">
+        <div class="summary-bar" id="summary-bar"></div>
+
+        <div class="layout">
+
+            <!-- COL 1: assignment pool -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">All Assignments</div>
+                    <span style="font-size:11px;color:var(--muted)">Drag → into a category</span>
+                </div>
+                <div class="pool-body" id="pool"
+                     ondragover="onDragOver(event,'__pool__')"
+                     ondragleave="onDragLeave(event,'__pool__')"
+                     ondrop="onDrop(event,'__pool__')">
+                    <div class="chip-pool" id="pool-chips"></div>
+                </div>
+            </div>
+
+            <!-- COL 2: categories + dropzones -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Grade Categories</div>
+                    <button class="btn btn-ghost btn-sm" onclick="addCategory()">＋ Add</button>
+                </div>
+                <div class="cats-body">
+                    <div id="cat-rows"></div>
+                    <div class="weight-total" id="weight-total">Total: 0%</div>
+                    <div id="dropzones"></div>
+                </div>
+            </div>
+
+            <!-- COL 3: manual assignments -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Manual Assignments</div>
+                    <button class="btn btn-ghost btn-sm" onclick="addManual()">＋ Add</button>
+                </div>
+                <div class="manual-body">
+                    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">
+                        Add grades not on Gradescope. They appear in the pool to drag into categories.
+                    </div>
+                    <div class="manual-hdr">
+                        <span>Name</span><span>Earned</span><span>Possible</span><span></span>
+                    </div>
+                    <div id="manual-rows"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+var COURSE_ID   = '';
+var ASSIGNMENTS = [];   // from gradescope
+var CATEGORIES  = [];
+var BUCKETS     = {};
+var MANUAL      = [];
+var UNASSIGNED  = [];
+var dragging    = null;
+var GS_SUMMARY  = null;
+
+(function() {
+    var p = new URLSearchParams(window.location.search);
+    COURSE_ID = p.get('id') || '';
+    var name  = decodeURIComponent(p.get('name') || 'Course');
+    document.getElementById('course-title').textContent = name;
+    document.title = name;
+    document.getElementById('back-btn').addEventListener('click', function() { window.history.back(); });
+    loadData();
+})();
+
+function post(params) {
+    return fetch('/~student89/gradescope2.py', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(params)
+    }).then(function(r){ return r.text(); }).then(function(t){ return JSON.parse(t); });
+}
+
+function loadData() {
+    post({ action: 'course_data', course_id: COURSE_ID })
+    .then(function(d) {
+        if (!d.ok) { alert('Error: ' + d.error); return; }
+        ASSIGNMENTS = d.assignments;
+        GS_SUMMARY  = d.summary;
+        var w       = d.weights;
+        CATEGORIES  = w.categories  || [];
+        BUCKETS     = w.assignments || {};
+        MANUAL      = w.manual      || [];
+        syncUnassigned();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('main').style.display    = '';
+        renderSummary();
+        renderAll();
+    })
+    .catch(function(e){ alert('Failed to load: ' + e.message); });
+}
+
+// Build UNASSIGNED from all sources (gradescope + manual), minus what's in buckets
+function syncUnassigned() {
+    var assigned = {};
+    Object.keys(BUCKETS).forEach(function(cat) {
+        (BUCKETS[cat]||[]).forEach(function(n){ assigned[n] = true; });
+    });
+    UNASSIGNED = [];
+    ASSIGNMENTS.forEach(function(a) {
+        if (!assigned[a.name]) UNASSIGNED.push(a.name);
+    });
+    MANUAL.forEach(function(m) {
+        if (m.name && !assigned[m.name]) UNASSIGNED.push(m.name);
+    });
+}
+
+// ── grade helpers ─────────────────────────────────────────────────────────────
+function gradeClass(p){ if(p>=90)return'ga'; if(p>=80)return'gb'; if(p>=70)return'gc'; return'gdf'; }
+function letterGrade(p){
+    if(p>=93)return'A'; if(p>=90)return'A-'; if(p>=87)return'B+'; if(p>=83)return'B';
+    if(p>=80)return'B-'; if(p>=77)return'C+'; if(p>=73)return'C'; if(p>=70)return'C-';
+    if(p>=67)return'D+'; if(p>=63)return'D'; if(p>=60)return'D-'; return'F';
+}
+
+function calcWeighted() {
+    var valid = CATEGORIES.filter(function(c){ return c.name && c.weight > 0; });
+    if (!valid.length) return null;
+    var included = [];
+    valid.forEach(function(cat) {
+        var names = BUCKETS[cat.name] || [];
+        var earned = 0, possible = 0;
+        names.forEach(function(name) {
+            var a = findAssignment(name);
+            if (a && a.possible > 0) { earned += a.earned; possible += a.possible; }
+        });
+        if (possible > 0) included.push({ weight: cat.weight, pct: (earned/possible)*100 });
+    });
+    if (!included.length) return null;
+    var tw = included.reduce(function(s,x){ return s+x.weight; }, 0);
+    return included.reduce(function(s,x){ return s+(x.weight/tw)*x.pct; }, 0);
+}
+
+function renderSummary() {
+    var bar  = document.getElementById('summary-bar');
+    var gs   = GS_SUMMARY;
+    var wpct = calcWeighted();
+    var html = '';
+    if (gs) {
+        var cls = gradeClass(gs.pct);
+        if (wpct !== null) {
+            var wcls = gradeClass(wpct);
+            html +=
+                '<div class="summary-card"><div class="summary-val '+wcls+'">' + wpct.toFixed(1) + '%</div><div class="summary-lbl">Weighted Grade</div></div>' +
+                '<div class="summary-card"><div class="summary-val '+wcls+'">' + letterGrade(wpct) + '</div><div class="summary-lbl">Letter Grade</div></div>' +
+                '<div class="summary-card"><div class="summary-val '+cls+'" style="font-size:16px">' + gs.pct + '%</div><div class="summary-lbl">GS Cumulative</div></div>';
+        } else {
+            html +=
+                '<div class="summary-card"><div class="summary-val '+cls+'">' + gs.pct + '%</div><div class="summary-lbl">Cumulative Grade</div></div>' +
+                '<div class="summary-card"><div class="summary-val '+cls+'">' + gs.letter + '</div><div class="summary-lbl">Letter Grade</div></div>';
+        }
+        html +=
+            '<div class="summary-card"><div class="summary-val">' + gs.earned + ' / ' + gs.possible + '</div><div class="summary-lbl">Points</div></div>' +
+            '<div class="summary-card"><div class="summary-val">' + gs.count + '</div><div class="summary-lbl">Graded Items</div></div>';
+    }
+    bar.innerHTML = html;
+}
+
+function renderAll() {
+    renderCategories();
+    renderDropzones();
+    renderPool();
+    renderManual();
+    renderSummary();
+}
+
+function renderCategories() {
+    var el = document.getElementById('cat-rows');
+    el.innerHTML = '';
+    CATEGORIES.forEach(function(cat, i) {
+        var row = document.createElement('div');
+        row.className = 'cat-row';
+        row.innerHTML =
+            '<input class="cat-name-input" type="text" value="' + escH(cat.name) + '" placeholder="Category name"' +
+                ' oninput="updateCatName(' + i + ', this.value)" />' +
+            '<div class="cat-weight-wrap">' +
+                '<input class="cat-weight-input" type="text" inputmode="decimal" value="' + cat.weight + '" placeholder="0"' +
+                    ' oninput="updateCatWeight(' + i + ', this.value)" />' +
+                '<span class="cat-pct-sym">%</span>' +
+            '</div>' +
+            '<button class="btn btn-danger btn-sm" onclick="removeCategory(' + i + ')">✕</button>';
+        el.appendChild(row);
+    });
+    var total = CATEGORIES.reduce(function(s,c){ return s + (parseFloat(c.weight)||0); }, 0);
+    var tw = document.getElementById('weight-total');
+    tw.textContent = 'Total: ' + total.toFixed(0) + '%';
+    tw.className   = 'weight-total' + (total > 100 ? ' over' : '');
+}
+
+function renderDropzones() {
+    var el = document.getElementById('dropzones');
+    el.innerHTML = '';
+    CATEGORIES.forEach(function(cat) {
+        var names   = BUCKETS[cat.name] || [];
+        var earned  = 0, possible = 0;
+        names.forEach(function(n) {
+            var a = findAssignment(n);
+            if (a && a.possible > 0) { earned += a.earned; possible += a.possible; }
+        });
+        var catPct = possible > 0 ? (earned/possible*100).toFixed(1) + '%' : '—';
+
+        var dz = document.createElement('div');
+        dz.className = 'dropzone';
+        dz.id        = 'dz-' + safe(cat.name);
+        dz.setAttribute('data-cat', cat.name);
+        dz.ondragover  = function(e){ onDragOver(e, cat.name); };
+        dz.ondragleave = function(e){ onDragLeave(e, cat.name); };
+        dz.ondrop      = function(e){ onDrop(e, cat.name); };
+
+        var chipsHtml = names.map(function(n){ return buildChip(n, cat.name); }).join('');
+        dz.innerHTML =
+            '<div class="dropzone-label">' + escH(cat.name) + ' · ' + cat.weight + '%' +
+                '<span>' + catPct + '</span>' +
+            '</div>' +
+            '<div class="dropzone-chips">' +
+                (chipsHtml || '<span class="dropzone-hint">Drop here</span>') +
+            '</div>';
+        el.appendChild(dz);
+    });
+}
+
+function renderPool() {
+    var el = document.getElementById('pool-chips');
+    if (!UNASSIGNED.length) {
+        el.innerHTML = '<span style="font-size:12px;color:var(--muted);padding:8px 0;display:block">All assigned!</span>';
+        return;
+    }
+    el.innerHTML = UNASSIGNED.map(function(n) { return buildChip(n, '__pool__'); }).join('');
+}
+
+function renderManual() {
+    var el = document.getElementById('manual-rows');
+    el.innerHTML = '';
+    MANUAL.forEach(function(m, i) {
+        var row = document.createElement('div');
+        row.className = 'manual-row';
+        row.innerHTML =
+            '<input class="manual-input" type="text" value="' + escH(m.name) + '" placeholder="Final Exam"' +
+                ' oninput="updateManual(' + i + ', \'name\', this.value)" />' +
+            '<input class="manual-input" type="text" inputmode="decimal" value="' + m.earned + '" placeholder="0"' +
+                ' oninput="updateManual(' + i + ', \'earned\', this.value)" />' +
+            '<input class="manual-input" type="text" inputmode="decimal" value="' + m.possible + '" placeholder="100"' +
+                ' oninput="updateManual(' + i + ', \'possible\', this.value)" />' +
+            '<button class="btn btn-danger btn-sm" onclick="removeManual(' + i + ')">✕</button>';
+        el.appendChild(row);
+    });
+}
+
+function buildChip(name, fromCat) {
+    var a      = findAssignment(name);
+    var score  = a ? (a.earned.toFixed(1) + '/' + a.possible.toFixed(1)) : '';
+    var isMan  = isManual(name);
+    return '<div class="chip' + (isMan ? ' chip-manual' : '') + '" draggable="true"' +
+        ' data-name="' + escA(name) + '" data-from="' + escA(fromCat) + '"' +
+        ' ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">' +
+        '<span class="chip-name" title="' + escA(name) + '">' + escH(name) + '</span>' +
+        (score ? '<span class="chip-score">' + score + '</span>' : '') +
+        (fromCat !== '__pool__' ? '<span class="chip-x" onclick="returnToPool(\'' + escA(fromCat) + '\',\'' + escA(name) + '\')">×</span>' : '') +
+        '</div>';
+}
+
+// ── drag & drop ───────────────────────────────────────────────────────────────
+function onDragStart(e) {
+    dragging = { name: e.target.getAttribute('data-name'), from: e.target.getAttribute('data-from') };
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnd(e) { e.target.classList.remove('dragging'); dragging = null; }
+
+function onDragOver(e, cat) {
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    var el = cat === '__pool__' ? document.getElementById('pool') : document.getElementById('dz-' + safe(cat));
+    if (el) el.classList.add('drag-over');
+}
+function onDragLeave(e, cat) {
+    var el = cat === '__pool__' ? document.getElementById('pool') : document.getElementById('dz-' + safe(cat));
+    if (el) el.classList.remove('drag-over');
+}
+function onDrop(e, toCat) {
+    e.preventDefault();
+    var el = toCat === '__pool__' ? document.getElementById('pool') : document.getElementById('dz-' + safe(toCat));
+    if (el) el.classList.remove('drag-over');
+    if (!dragging || dragging.from === toCat) return;
+    var name = dragging.name, from = dragging.from;
+    if (from === '__pool__') {
+        UNASSIGNED = UNASSIGNED.filter(function(n){ return n !== name; });
+    } else {
+        BUCKETS[from] = (BUCKETS[from]||[]).filter(function(n){ return n !== name; });
+    }
+    if (toCat === '__pool__') {
+        UNASSIGNED.push(name);
+    } else {
+        if (!BUCKETS[toCat]) BUCKETS[toCat] = [];
+        BUCKETS[toCat].push(name);
+    }
+    renderDropzones();
+    renderPool();
+    renderSummary();
+    scheduleSave();
+}
+
+function returnToPool(cat, name) {
+    BUCKETS[cat] = (BUCKETS[cat]||[]).filter(function(n){ return n !== name; });
+    UNASSIGNED.push(name);
+    renderDropzones();
+    renderPool();
+    renderSummary();
+    scheduleSave();
+}
+
+// ── categories ────────────────────────────────────────────────────────────────
+function addCategory() {
+    CATEGORIES.push({ name: '', weight: 0 });
+    renderAll();
+    scheduleSave();
+}
+function removeCategory(i) {
+    var cat = CATEGORIES[i];
+    (BUCKETS[cat.name]||[]).forEach(function(n){ UNASSIGNED.push(n); });
+    delete BUCKETS[cat.name];
+    CATEGORIES.splice(i, 1);
+    renderAll();
+    scheduleSave();
+}
+function updateCatName(i, val) {
+    var old = CATEGORIES[i].name;
+    CATEGORIES[i].name = val;
+    if (BUCKETS[old] !== undefined) { BUCKETS[val] = BUCKETS[old]; delete BUCKETS[old]; }
+    renderDropzones();
+    renderSummary();
+    scheduleSave();
+}
+function updateCatWeight(i, val) {
+    CATEGORIES[i].weight = parseFloat(val) || 0;
+    renderCategories();
+    renderDropzones();
+    renderSummary();
+    scheduleSave();
+}
+
+// ── manual ────────────────────────────────────────────────────────────────────
+function addManual() {
+    MANUAL.push({ name: '', earned: 0, possible: 100 });
+    renderManual();
+    scheduleSave();
+}
+function removeManual(i) {
+    var name = MANUAL[i].name;
+    MANUAL.splice(i, 1);
+    // Remove from buckets and unassigned
+    Object.keys(BUCKETS).forEach(function(cat) {
+        BUCKETS[cat] = (BUCKETS[cat]||[]).filter(function(n){ return n !== name; });
+    });
+    UNASSIGNED = UNASSIGNED.filter(function(n){ return n !== name; });
+    renderAll();
+    scheduleSave();
+}
+function updateManual(i, field, val) {
+    var oldName = MANUAL[i].name;
+    if (field === 'name') {
+        MANUAL[i].name = val;
+        // Update name references in buckets and unassigned
+        Object.keys(BUCKETS).forEach(function(cat) {
+            BUCKETS[cat] = (BUCKETS[cat]||[]).map(function(n){ return n === oldName ? val : n; });
+        });
+        UNASSIGNED = UNASSIGNED.map(function(n){ return n === oldName ? val : n; });
+        // If it's a new entry not yet in pool, add it
+        var inBucket = false;
+        Object.keys(BUCKETS).forEach(function(cat) {
+            if ((BUCKETS[cat]||[]).indexOf(val) > -1) inBucket = true;
+        });
+        if (!inBucket && val && UNASSIGNED.indexOf(val) === -1) {
+            // Remove old name from unassigned if present
+            UNASSIGNED = UNASSIGNED.filter(function(n){ return n !== oldName; });
+            UNASSIGNED.push(val);
+        }
+        renderPool();
+        renderDropzones();
+    } else {
+        MANUAL[i][field] = parseFloat(val) || 0;
+        renderDropzones();
+        renderSummary();
+    }
+    scheduleSave();
+}
+
+// When a manual entry is first created (empty name), add to pool once name is set
+// This is handled in updateManual above.
+// On load, syncUnassigned already picks up manual entries.
+
+// ── save ──────────────────────────────────────────────────────────────────────
+var saveTimer = null;
+function scheduleSave() {
+    clearTimeout(saveTimer);
+    document.getElementById('save-status').textContent = 'Saving…';
+    saveTimer = setTimeout(doSave, 1000);
+}
+function doSave() {
+    var data = { categories: CATEGORIES, assignments: BUCKETS, manual: MANUAL };
+    post({ action: 'save_weights', course_id: COURSE_ID, data: JSON.stringify(data) })
+    .then(function(d) {
+        var el = document.getElementById('save-status');
+        el.textContent = d.ok ? '✓ Saved' : '⚠ Save failed';
+        setTimeout(function(){ el.textContent = ''; }, 2500);
+    });
+}
+
+// ── utils ─────────────────────────────────────────────────────────────────────
+function findAssignment(name) {
+    for (var i = 0; i < ASSIGNMENTS.length; i++) { if (ASSIGNMENTS[i].name === name) return ASSIGNMENTS[i]; }
+    for (var j = 0; j < MANUAL.length; j++)      { if (MANUAL[j].name === name)      return MANUAL[j]; }
+    return null;
+}
+function isManual(name) {
+    for (var j = 0; j < MANUAL.length; j++) { if (MANUAL[j].name === name) return true; }
+    return false;
+}
+function safe(s){ return String(s).replace(/[^a-zA-Z0-9]/g,'_'); }
+function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escA(s){ return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+</script>
+</body>
+</html>
