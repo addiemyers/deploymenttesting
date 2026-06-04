@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gradescope Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <style>
         :root {
             --bg:        #f2efe9;
@@ -26,8 +27,8 @@
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; min-height: 100vh; font-size: 14px; line-height: 1.6; }
-        .shell { max-width: 780px; margin: 0 auto; padding: 52px 24px 100px; }
-        .logo { font-weight: 800; font-size: clamp(26px,4vw,38px); letter-spacing: -.03em; color: var(--text); }
+        .shell { max-width: 1100px; margin: 0 auto; padding: 44px 28px 100px; }
+        .logo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(26px,4vw,38px); letter-spacing: -.01em; color: var(--text); }
         .logo span { color: var(--accent); }
         .tagline { margin-top: 4px; font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
         .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 36px; margin-bottom: 20px; box-shadow: var(--shadow); }
@@ -43,15 +44,18 @@
         .btn-sm { font-size: 12px; padding: 7px 14px; }
         .btn-ghost { background: var(--surface); border: 1.5px solid var(--border2); color: var(--text2); box-shadow: none; font-weight: 500; }
         .btn-ghost:hover { background: var(--surface2); border-color: rgba(45,106,79,.3); color: var(--text); box-shadow: none; }
+        .grade-hidden .grade-pct,
+        .grade-hidden .grade-letter { visibility: hidden; }
+        .toggle-btn { font-size: 11px; padding: 5px 12px; }
         .error { background: rgba(192,57,43,.06); border: 1px solid rgba(192,57,43,.2); color: var(--red); border-radius: 9px; padding: 10px 14px; font-size: 13px; margin-top: 14px; display: none; }
         .topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1.5px solid var(--border2); margin-bottom: 4px; }
-        .topbar-title { font-weight: 800; font-size: 20px; letter-spacing: -.03em; }
+        .topbar-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; letter-spacing: -.01em; }
         .sem-heading { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 32px 0 10px; display: flex; align-items: center; gap: 10px; }
         .sem-heading::after { content: ''; flex: 1; height: 1px; background: rgba(45,106,79,.2); }
         .course-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; overflow: hidden; box-shadow: var(--shadow); transition: box-shadow .2s, border-color .2s, transform .15s; }
         .course-card:hover { box-shadow: var(--shadow-lg); border-color: rgba(45,106,79,.3); transform: translateY(-1px); }
         .course-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
-        .course-name { font-weight: 600; font-size: 14px; letter-spacing: -.01em; }
+        .course-name { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 14px; letter-spacing: -.01em; }
         .course-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .grade-pct { font-size: 13px; font-weight: 600; color: var(--text2); }
         .grade-letter { font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 6px; letter-spacing: .04em; }
@@ -98,7 +102,30 @@
 </div>
 
 <script>
-var STATE = { courses: [], grades: {} };
+var STATE = { courses: [], grades: {}, weighted: {} };
+var GRADES_VISIBLE = true;
+
+function toggleGrades() {
+    GRADES_VISIBLE = !GRADES_VISIBLE;
+    var btn = document.getElementById('toggle-grades-btn');
+    btn.textContent = GRADES_VISIBLE ? 'Hide Grades' : 'Show Grades';
+    var container = document.getElementById('courses-container');
+    if (GRADES_VISIBLE) {
+        container.classList.remove('grade-hidden');
+    } else {
+        container.classList.add('grade-hidden');
+    }
+}
+
+function gradeClass(pct) {
+    if (pct >= 90) return 'ga'; if (pct >= 80) return 'gb';
+    if (pct >= 70) return 'gc'; return 'gdf';
+}
+function letterGrade(pct) {
+    if(pct>=93)return'A'; if(pct>=90)return'A-'; if(pct>=87)return'B+'; if(pct>=83)return'B';
+    if(pct>=80)return'B-'; if(pct>=77)return'C+'; if(pct>=73)return'C'; if(pct>=70)return'C-';
+    if(pct>=67)return'D+'; if(pct>=63)return'D'; if(pct>=60)return'D-'; return'F';
+}
 
 function gradeClass(pct) {
     if (pct >= 90) return 'ga';
@@ -169,6 +196,28 @@ document.getElementById('logout-btn').addEventListener('click', function() {
     });
 });
 
+function calcWeightedFromData(assignments, weights) {
+    var cats = (weights.categories || []).filter(function(c){ return c.name && c.weight > 0; });
+    if (!cats.length) return null;
+    var buckets = weights.assignments || {};
+    var allAssign = {};
+    (assignments || []).forEach(function(a){ allAssign[a.name] = a; });
+    (weights.manual || []).forEach(function(m){ if(m.name) allAssign[m.name] = m; });
+    var included = [];
+    cats.forEach(function(cat) {
+        var names = buckets[cat.name] || [];
+        var earned = 0, possible = 0;
+        names.forEach(function(n) {
+            var a = allAssign[n];
+            if (a && a.possible > 0) { earned += a.earned; possible += a.possible; }
+        });
+        if (possible > 0) included.push({ weight: cat.weight, pct: (earned/possible)*100 });
+    });
+    if (!included.length) return null;
+    var tw = included.reduce(function(s,x){ return s+x.weight; }, 0);
+    return included.reduce(function(s,x){ return s+(x.weight/tw)*x.pct; }, 0);
+}
+
 function renderDashboard() {
     var container = document.getElementById('courses-container');
     container.innerHTML = '';
@@ -202,7 +251,7 @@ function renderDashboard() {
 
 function openCourse(courseId, displayName) {
     var url = '/~student89/course2.html?id=' + courseId + '&name=' + displayName;
-    window.open(url, '_blank');
+    window.location.href = url;
 }
 </script>
 </body>
