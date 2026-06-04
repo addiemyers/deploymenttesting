@@ -95,7 +95,8 @@
     <div id="dashboard-panel">
         <div class="topbar">
             <div class="topbar-title">All Courses</div>
-            <button class="btn btn-ghost btn-sm" id="logout-btn">← Log out</button>
+                <button class="btn btn-ghost btn-sm toggle-btn" id="toggle-grades-btn" onclick="toggleGrades()">Hide Grades</button>
+                <button class="btn btn-ghost btn-sm" id="logout-btn">← Log out</button>
         </div>
         <div id="courses-container"></div>
     </div>
@@ -170,13 +171,37 @@ document.getElementById('login-btn').addEventListener('click', function() {
     .then(function(t) {
         var d = JSON.parse(t);
         if (!d.ok) throw new Error(d.error||'Login failed');
-        STATE.courses = d.courses;
-        STATE.grades  = d.grades;
-        // Save email for course page
-        sessionStorage.setItem('gs_email', email);
-        document.getElementById('login-panel').style.display    = 'none';
-        document.getElementById('dashboard-panel').style.display = 'block';
-        renderDashboard();
+        STATE.courses  = d.courses;
+        STATE.grades   = d.grades;
+        STATE.weighted = {};
+        var pending = d.courses.length;
+        function finishLogin() {
+            document.getElementById('login-panel').style.display    = 'none';
+            document.getElementById('dashboard-panel').style.display = 'block';
+            renderDashboard();
+        }
+        if (pending === 0) { finishLogin(); return; }
+        d.courses.forEach(function(c) {
+            var p2 = new URLSearchParams();
+            p2.append('action', 'course_data');
+            p2.append('course_id', c.id);
+            fetch('/~student89/gradescope2.py', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: p2
+            }).then(function(r){ return r.text(); }).then(function(t){
+                try {
+                    var cd = JSON.parse(t);
+                    if (cd.ok && cd.weights) {
+                        var wpct = calcWeightedFromData(cd.assignments, cd.weights);
+                        if (wpct !== null) STATE.weighted[c.id] = wpct;
+                    }
+                } catch(e) {}
+            }).catch(function(){}).finally(function(){
+                pending--;
+                if (pending === 0) finishLogin();
+            });
+        });
     })
     .catch(function(e) { err.textContent = e.message; err.style.display = 'block'; })
     .finally(function() { btn.disabled = false; btn.textContent = 'Sign in'; });
@@ -230,16 +255,29 @@ function renderDashboard() {
         h.className = 'sem-heading'; h.textContent = sem;
         wrap.appendChild(h);
         grouped[sem].forEach(function(c) {
-            var gs  = STATE.grades[c.id];
-            var cls = gs ? gradeClass(gs.pct) : '';
+            var gs   = STATE.grades[c.id];
+            var wpct = STATE.weighted[c.id];
+            var showPct, showLetter, cls;
+            if (wpct !== null && wpct !== undefined) {
+                showPct    = wpct.toFixed(1) + '%';
+                showLetter = letterGrade(wpct);
+                cls        = gradeClass(wpct);
+            } else if (gs) {
+                showPct    = gs.pct + '%';
+                showLetter = gs.letter;
+                cls        = gradeClass(gs.pct);
+            } else {
+                showPct = null;
+            }
             var div = document.createElement('div');
             div.className = 'course-card';
             div.innerHTML =
                 '<div class="course-row">' +
                     '<div class="course-name">' + c.display + '</div>' +
                     '<div class="course-right">' +
-                        (gs ? '<span class="grade-pct '+cls+'">' + gs.pct + '%</span>' +
-                              '<span class="grade-letter '+cls+'">' + gs.letter + '</span>' : '<span style="color:var(--muted)">—</span>') +
+                        (showPct
+                            ? '<span class="grade-pct '+cls+'">' + showPct + '</span><span class="grade-letter '+cls+'">' + showLetter + '</span>'
+                            : '<span style="color:var(--muted)">—</span>') +
                         '<button class="btn btn-ghost btn-sm open-btn" onclick="openCourse(\''+c.id+'\',\''+encodeURIComponent(c.display)+'\')">View →</button>' +
                     '</div>' +
                 '</div>';
