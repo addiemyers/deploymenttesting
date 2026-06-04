@@ -26,7 +26,7 @@
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; font-size: 14px; line-height: 1.6; }
-        .shell { max-width: 1300px; margin: 0 auto; padding: 32px 24px 80px; }
+        .shell { max-width: 98vw; margin: 0 auto; padding: 28px 16px 80px; }
 
         /* topbar */
         .topbar { display: flex; align-items: center; gap: 14px; padding-bottom: 18px; border-bottom: 1.5px solid var(--border2); margin-bottom: 24px; }
@@ -52,7 +52,7 @@
         .ga { color: var(--green); } .gb { color: var(--blue); } .gc { color: var(--yellow); } .gdf { color: var(--red); }
 
         /* three-column layout: pool | categories | manual */
-        .layout { display: grid; grid-template-columns: 1fr 380px 280px; gap: 16px; align-items: start; }
+        .layout { display: grid; grid-template-columns: 220px 1fr 240px; gap: 16px; align-items: start; }
 
         /* panels */
         .panel { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 0; }
@@ -506,7 +506,11 @@ function updateCatName(i, val) {
 }
 function updateCatWeight(i, val) {
     CATEGORIES[i].weight = parseFloat(val) || 0;
-    renderCategories();
+    // Update only the total display and dropzone labels — do NOT re-render inputs (breaks typing)
+    var total = CATEGORIES.reduce(function(s,c){ return s+(parseFloat(c.weight)||0); }, 0);
+    var tw = document.getElementById('weight-total');
+    tw.textContent = 'Total: ' + total.toFixed(0) + '%';
+    tw.className   = 'weight-total' + (total > 100 ? ' over' : '');
     renderDropzones();
     renderSummary();
     scheduleSave();
