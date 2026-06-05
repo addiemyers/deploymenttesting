@@ -40,7 +40,7 @@
         .summary-val{font-family:'Playfair Display',serif;font-weight:700;font-size:22px}
         .summary-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-top:2px}
         .ga{color:var(--green)} .gb{color:var(--blue)} .gc{color:var(--yellow)} .gdf{color:var(--red)}
-        .grades-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:start}
+        .grades-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start} .cats-full{grid-column:1/-1} .cats-body{max-height:none!important}
         .panel{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
         .panel-header{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
         .panel-title{font-family:'Playfair Display',serif;font-weight:600;font-size:14px}
@@ -58,7 +58,7 @@
         .cat-pct-sym{font-size:13px;color:var(--muted);padding-right:6px}
         .weight-total{font-size:11px;color:var(--muted);margin:4px 0 10px}
         .weight-total.over{color:var(--red);font-weight:600}
-        .dropzone{border:2px dashed var(--border2);border-radius:8px;padding:8px 10px;margin-bottom:8px;transition:border-color .2s,background .2s;min-height:48px}
+        .dropzone{border:2px dashed var(--border2);border-radius:8px;padding:8px 10px;margin-bottom:8px;transition:border-color .2s,background .2s;min-height:48px;display:inline-block;vertical-align:top;width:calc(25% - 8px);margin-right:8px} .dropzones-wrap{display:flex;flex-wrap:wrap;gap:10px} .dropzones-wrap .dropzone{width:calc(25% - 8px);display:block;margin-right:0}
         .dropzone.drag-over{border-color:var(--accent);background:rgba(45,106,79,.05)}
         .dropzone-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
         .dropzone-label span{color:var(--accent)}
@@ -166,7 +166,7 @@
                     </div>
                 </div>
 
-                <div class="panel">
+                <div class="panel cats-full">
                     <div class="panel-header">
                         <div class="panel-title">Grade Categories</div>
                         <button class="btn btn-ghost btn-sm" onclick="addCategory()">&#43; Add</button>
@@ -174,7 +174,7 @@
                     <div class="cats-body">
                         <div id="cat-rows"></div>
                         <div class="weight-total" id="weight-total">Total: 0%</div>
-                        <div id="dropzones"></div>
+                        <div class="dropzones-wrap" id="dropzones"></div>
                     </div>
                 </div>
 
