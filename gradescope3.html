@@ -213,7 +213,7 @@ document.getElementById('password').addEventListener('keydown', function(e) {
 
 document.getElementById('logout-btn').addEventListener('click', function() {
     var params = new URLSearchParams(); params.append('action','logout');
-    fetch('/~student89/gradescope2.py', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params })
+    fetch('/~student89/gradescope3.py', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params })
     .then(function() {
         document.getElementById('dashboard-panel').style.display = 'none';
         document.getElementById('login-panel').style.display = '';
