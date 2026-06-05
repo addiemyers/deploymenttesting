@@ -166,7 +166,7 @@ document.getElementById('login-btn').addEventListener('click', function() {
     params.append('action', 'login');
     params.append('email', email);
     params.append('password', pass);
-    fetch('/~student89/gradescope2.py', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params })
+    fetch('/~student89/gradescope3.py', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params })
     .then(function(r) { if (!r.ok) throw new Error('Network error'); return r.text(); })
     .then(function(t) {
         var d = JSON.parse(t);
@@ -185,7 +185,7 @@ document.getElementById('login-btn').addEventListener('click', function() {
             var p2 = new URLSearchParams();
             p2.append('action', 'course_data');
             p2.append('course_id', c.id);
-            fetch('/~student89/gradescope2.py', {
+            fetch('/~student89/gradescope3.py', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: p2
@@ -292,16 +292,11 @@ function renderDashboard() {
             }
             var div = document.createElement('div');
             div.className = 'course-card';
-            div.innerHTML =
-                '<div class="course-row">' +
-                    '<div class="course-name">' + c.display + '</div>' +
-                    '<div class="course-right">' +
-                        (showPct
-                            ? '<span class="grade-pct '+cls+'">' + showPct + '</span><span class="grade-letter '+cls+'">' + showLetter + '</span>'
-                            : '<span style="color:var(--muted)">—</span>') +
-                        '<button class="btn btn-ghost btn-sm open-btn" onclick="openCourse(''+c.id+'',''+encodeURIComponent(c.display)+'')">View →</button>' +
-                    '</div>' +
-                '</div>';
+            var btnHtml = '<button class="btn btn-ghost btn-sm open-btn" onclick="openCourse(\'' + c.id + '\',\'' + encodeURIComponent(c.display) + '\')">View →</button>';
+            var gradeHtml = showPct
+                ? '<span class="grade-pct ' + cls + '">' + showPct + '</span><span class="grade-letter ' + cls + '">' + showLetter + '</span>'
+                : '<span style="color:var(--muted)">—</span>';
+            div.innerHTML = '<div class="course-row"><div class="course-name">' + c.display + '</div><div class="course-right">' + gradeHtml + btnHtml + '</div></div>';
             courseWrap.appendChild(div);
         });
         wrap.appendChild(courseWrap);
@@ -310,7 +305,7 @@ function renderDashboard() {
 }
 
 function openCourse(courseId, displayName) {
-    var url = '/~student89/course2.html?id=' + courseId + '&name=' + displayName;
+    var url = '/~student89/course3.html?id=' + courseId + '&name=' + displayName;
     window.location.href = url;
 }
 </script>
