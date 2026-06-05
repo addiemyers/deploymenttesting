@@ -311,7 +311,7 @@ var SELECTED    = {};   // name -> true for multiselect
 })();
 
 function post(params) {
-    return fetch('/~student89/gradescope2.py', {
+    return fetch('/~student89/gradescope3.py', {
         method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(params)
     }).then(function(r){ return r.text(); }).then(function(t){ return JSON.parse(t); });
 }
