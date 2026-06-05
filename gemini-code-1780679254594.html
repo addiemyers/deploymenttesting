@@ -4,161 +4,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Ultimate Pop-Tart Tier List</title>
+    <!-- Modern Sans-Serif Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text-color: #ffffff;
-            --border-color: #444;
+            --bg-color: #0f1115;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
         h1 {
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #ffb703;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.05em;
+            background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         p.subtitle {
-            color: #aaa;
-            margin-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin: 0 0 40px 0;
+            font-weight: 400;
         }
 
         /* Tier List Container */
         .tier-list {
             width: 100%;
             max-width: 1000px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
             overflow: hidden;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         /* Tier Row Layout */
         .tier-row {
             display: flex;
-            border-bottom: 1px solid var(--border-color);
-            min-height: 100px;
-            background-color: #222;
+            border-bottom: 1px solid var(--panel-border);
+            min-height: 110px;
         }
 
         .tier-row:last-child {
             border-bottom: none;
         }
 
-        /* Tier Labels */
+        /* Sleeker, Muted Tier Labels */
         .tier-label {
-            width: 100px;
-            min-width: 100px;
+            width: 90px;
+            min-width: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+            font-size: 28px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.9);
             user-select: none;
         }
 
-        /* Label Colors */
-        .s-tier { background-color: #ff7f7f; }
-        .a-tier { background-color: #ffbf7f; }
-        .b-tier { background-color: #ffdf7f; }
-        .c-tier { background-color: #ffff7f; }
-        .d-tier { background-color: #bfff7f; }
-        .f-tier { background-color: #7fff7f; }
+        /* Modernized Neon/Pastel Labels */
+        .s-tier { background: linear-gradient(135deg, #ff5e62, #ff9966); }
+        .a-tier { background: linear-gradient(135deg, #ff9944, #ffbc00); }
+        .b-tier { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+        .c-tier { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .d-tier { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .f-tier { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
 
-        /* Drop Zones */
+        /* Smooth Drop Zones */
         .tier-bench {
             flex-grow: 1;
             display: flex;
             flex-wrap: wrap;
-            padding: 10px;
-            gap: 10px;
+            padding: 12px;
+            gap: 12px;
             align-content: center;
-            transition: background-color 0.2s ease;
+            transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tier-bench.drag-over {
-            background-color: #333;
+            background-color: rgba(255, 255, 255, 0.06);
         }
 
-        /* Flavor Pool (Unranked items) */
+        /* Flavor Pool */
         .pool-container {
             width: 100%;
             max-width: 1000px;
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
         }
 
         .pool-container h2 {
-            margin-top: 0;
-            font-size: 18px;
-            color: #ffb703;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
+            margin: 0 0 16px 0;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
         }
 
         .flavor-pool {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            min-height: 120px;
-            padding: 10px;
+            gap: 12px;
+            min-height: 140px;
         }
 
-        /* Pop-Tart Items */
+        /* Sleek Modern Pop-Tart Cards */
         .poptart-card {
-            background: linear-gradient(135deg, #e6c594 0%, #cfa670 100%);
-            color: #333;
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: grab;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            user-select: none;
-            border: 2px solid #b08d5b;
-            text-align: center;
-            max-width: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+            width: 105px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            cursor: grab;
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        background-color 0.2s, 
+                        box-shadow 0.2s,
+                        border-color 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .poptart-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .poptart-card:active {
             cursor: grabbing;
         }
 
+        /* Target Styling for Drag State */
         .poptart-card.dragging {
-            opacity: 0.4;
-            transform: scale(0.95);
+            opacity: 0.3;
+            transform: scale(0.9);
+        }
+
+        /* Visual Box Inside Card */
+        .poptart-image-box {
+            width: 100%;
+            height: 75px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .poptart-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Smooth Typography for Labels */
+        .poptart-name {
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.3;
+            color: rgba(255, 255, 255, 0.85);
+            word-break: break-word;
+            width: 100%;
         }
     </style>
 </head>
 <body>
 
-    <h1>Pop-Tart Tier List Ranker</h1>
-    <p class="subtitle">Drag and drop the flavors to rank them from God-Tier to Literal Garbage</p>
+    <h1>Pop-Tart Flavor Tier-List</h1>
+    <p class="subtitle">The Complete Ranking</p>
 
-    <!-- The Tier List Grid -->
+    <!-- The Grid Setup -->
     <div class="tier-list">
         <div class="tier-row">
             <div class="tier-label s-tier">S</div>
@@ -186,36 +235,80 @@
         </div>
     </div>
 
-    <!-- The Pool of Unranked Pop-Tarts -->
+    <!-- The Modernized Pool -->
     <div class="pool-container">
         <h2>Unranked Flavors</h2>
         <div class="flavor-pool tier-bench" data-tier="none">
-            <div class="poptart-card" draggable="true" id="pt-1">Strawberry (Frosted)</div>
-            <div class="poptart-card" draggable="true" id="pt-2">Brown Sugar Cinnamon</div>
-            <div class="poptart-card" draggable="true" id="pt-3">Cookies & Cream</div>
-            <div class="poptart-card" draggable="true" id="pt-4">S'mores</div>
-            <div class="poptart-card" draggable="true" id="pt-5">Blueberry (Frosted)</div>
-            <div class="poptart-card" draggable="true" id="pt-6">Cherry (Frosted)</div>
-            <div class="poptart-card" draggable="true" id="pt-7">Hot Fudge Sundae</div>
-            <div class="poptart-card" draggable="true" id="pt-8">Wild Berry</div>
-            <div class="poptart-card" draggable="true" id="pt-9">Raspberry</div>
-            <div class="poptart-card" draggable="true" id="pt-10">Chocolate Fudge</div>
-            <div class="poptart-card" draggable="true" id="pt-11">Unfrosted Strawberry</div>
-            <div class="poptart-card" draggable="true" id="pt-12">Red Velvet Cupcake</div>
+            
+            <div class="poptart-card" draggable="true" id="pt-1">
+                <div class="poptart-image-box" style="background-color: #ffb3ba;">
+                    <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?w=150&auto=format&fit=crop&q=60" alt="Strawberry">
+                </div>
+                <div class="poptart-name">Frosted Strawberry</div>
+            </div>
+
+            <div class="poptart-card" draggable="true" id="pt-2">
+                <div class="poptart-image-box" style="background-color: #ffdfba;">
+                    <img src="https://images.unsplash.com/photo-1600431521340-491eca880813?w=150&auto=format&fit=crop&q=60" alt="Cinnamon">
+                </div>
+                <div class="poptart-name">Brown Sugar Cinnamon</div>
+            </div>
+
+            <div class="poptart-card" draggable="true" id="pt-3">
+                <div class="poptart-image-box" style="background-color: #baffc9;">
+                    <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=150&auto=format&fit=crop&q=60" alt="Cookies and Cream">
+                </div>
+                <div class="poptart-name">Cookies & Cream</div>
+            </div>
+
+            <div class="poptart-card" draggable="true" id="pt-4">
+                <div class="poptart-image-box" style="background-color: #bae1ff;">
+                    <img src="https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=150&auto=format&fit=crop&q=60" alt="Smores">
+                </div>
+                <div class="poptart-name">S'mores</div>
+            </div>
+
+            <div class="poptart-card" draggable="true" id="pt-5">
+                <div class="poptart-image-box" style="background-color: #e8bae5;">
+                    <img src="https://images.unsplash.com/photo-1610431565576-90f707f5022f?w=150&auto=format&fit=crop&q=60" alt="Wild Berry">
+                </div>
+                <div class="poptart-name">Wild Berry</div>
+            </div>
+
+            <div class="poptart-card" draggable="true" id="pt-6">
+                <div class="poptart-image-box" style="background-color: #ffccd5;">
+                    <img src="https://images.unsplash.com/photo-1527018601619-a508a2be00cd?w=150&auto=format&fit=crop&q=60" alt="Cherry">
+                </div>
+                <div class="poptart-name">Frosted Cherry</div>
+            </div>
+
+            <div class="poptart-card" draggable="true" id="pt-7">
+                <div class="poptart-image-box" style="background-color: #ffffba;">
+                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=150&auto=format&fit=crop&q=60" alt="Hot Fudge">
+                </div>
+                <div class="poptart-name">Hot Fudge Sundae</div>
+            </div>
+
+            <div class="poptart-card" draggable="true" id="pt-8">
+                <div class="poptart-image-box" style="background-color: #d8f8e1;">
+                    <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?w=150&auto=format&fit=crop&q=60" alt="Blueberry">
+                </div>
+                <div class="poptart-name">Frosted Blueberry</div>
+            </div>
+
         </div>
     </div>
 
+    <!-- Drag & Drop Engine -->
     <script>
         const cards = document.querySelectorAll('.poptart-card');
         const benches = document.querySelectorAll('.tier-bench');
 
         cards.forEach(card => {
-            // Drag Start
             card.addEventListener('dragstart', () => {
                 card.classList.add('dragging');
             });
 
-            // Drag End
             card.addEventListener('dragend', () => {
                 card.classList.remove('dragging');
                 benches.forEach(bench => bench.classList.remove('drag-over'));
@@ -223,18 +316,15 @@
         });
 
         benches.forEach(bench => {
-            // Drag Over (Crucial to allow dropping)
             bench.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 bench.classList.add('drag-over');
             });
 
-            // Drag Leave
             bench.addEventListener('dragleave', () => {
                 bench.classList.remove('drag-over');
             });
 
-            // Drop Event
             bench.addEventListener('drop', (e) => {
                 e.preventDefault();
                 const draggingCard = document.querySelector('.dragging');
