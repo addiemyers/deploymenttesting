@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Grades</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg:#f2efe9; --surface:#faf8f4; --surface2:#ede9e1;
+            --border:#ddd8ce; --border2:#c8c2b6;
+            --accent:#2d6a4f; --accent-dk:#1f4f3a;
+            --green:#2d6a4f; --yellow:#b5820a; --red:#c0392b; --blue:#1a6896;
+            --text:#1a1814; --text2:#4a4640; --muted:#9a9590;
+            --radius:12px;
+            --shadow:0 1px 4px rgba(0,0,0,.06),0 4px 20px rgba(0,0,0,.05);
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;font-size:14px;line-height:1.6}
+        .shell{max-width:99vw;margin:0 auto;padding:24px 18px 80px}
+
+        /* topbar */
+        .topbar{display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1.5px solid var(--border2);margin-bottom:20px}
+        .course-title{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;flex:1}
+        .save-status{font-size:11px;color:var(--muted)}
+        .alien{font-size:26px;user-select:none}
+
+        /* tabs */
+        .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border)}
+        .tab{padding:8px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
+        .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+        .tab:hover{color:var(--text2)}
+        .tab-panel{display:none}
+        .tab-panel.active{display:block}
+
+        /* buttons */
+        .btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:inherit;font-weight:600;font-size:13px;padding:8px 18px;cursor:pointer;transition:background .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(45,106,79,.25)}
+        .btn:hover{background:var(--accent-dk)}
+        .btn:active{transform:scale(.98)}
+        .btn-sm{font-size:12px;padding:5px 12px}
+        .btn-ghost{background:var(--surface);border:1.5px solid var(--border2);color:var(--text2);box-shadow:none;font-weight:500}
+        .btn-ghost:hover{background:var(--surface2);color:var(--text);border-color:rgba(45,106,79,.3);box-shadow:none}
+        .btn-danger{background:rgba(192,57,43,.08);color:var(--red);border:1.5px solid rgba(192,57,43,.2);box-shadow:none}
+        .btn-danger:hover{background:rgba(192,57,43,.14);box-shadow:none}
+
+        /* summary */
+        .summary-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+        .summary-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 18px;box-shadow:var(--shadow);flex:1;min-width:110px}
+        .summary-val{font-family:'Playfair Display',serif;font-weight:700;font-size:22px}
+        .summary-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-top:2px}
+        .ga{color:var(--green)} .gb{color:var(--blue)} .gc{color:var(--yellow)} .gdf{color:var(--red)}
+
+        /* ── GRADES TAB layout: pool | categories | manual ── */
+        .grades-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:start}
+
+        /* panels */
+        .panel{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+        .panel-header{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+        .panel-title{font-family:'Playfair Display',serif;font-weight:600;font-size:14px}
+        .pool-body{padding:12px;min-height:100px}
+        .chip-pool{display:flex;flex-wrap:wrap;gap:4px}
+        .cats-body{padding:12px;max-height:calc(100vh - 300px);overflow-y:auto}
+        .manual-body{padding:12px}
+
+        /* category inputs */
+        .cat-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+        .cat-name-input{flex:1;min-width:0;background:var(--bg);border:1.5px solid var(--border2);border-radius:7px;color:var(--text);font-family:inherit;font-size:13px;padding:6px 10px;outline:none;transition:border-color .18s}
+        .cat-name-input:focus{border-color:var(--accent)}
+        .cat-weight-wrap{display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--border2);border-radius:7px;overflow:hidden;flex-shrink:0;width:66px;transition:border-color .18s}
+        .cat-weight-wrap:focus-within{border-color:var(--accent)}
+        .cat-weight-input{width:42px;border:none;background:transparent;color:var(--text);font-family:inherit;font-size:13px;padding:6px 2px 6px 8px;outline:none;-moz-appearance:textfield}
+        .cat-weight-input::-webkit-outer-spin-button,.cat-weight-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+        .cat-pct-sym{font-size:13px;color:var(--muted);padding-right:6px}
+        .weight-total{font-size:11px;color:var(--muted);margin:4px 0 10px}
+        .weight-total.over{color:var(--red);font-weight:600}
+        .dropzone{border:2px dashed var(--border2);border-radius:8px;padding:8px 10px;margin-bottom:8px;transition:border-color .2s,background .2s;min-height:48px}
+        .dropzone.drag-over{border-color:var(--accent);background:rgba(45,106,79,.05)}
+        .dropzone-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+        .dropzone-label span{color:var(--accent)}
+        .dropzone-chips{display:flex;flex-wrap:wrap;gap:3px;min-height:22px}
+        .dropzone-hint{font-size:11px;color:var(--muted)}
+
+        /* manual table */
+        .manual-row{display:grid;grid-template-columns:1fr 60px 60px auto;gap:6px;align-items:center;margin-bottom:6px}
+        .manual-hdr{display:grid;grid-template-columns:1fr 60px 60px auto;gap:6px;margin-bottom:5px}
+        .manual-hdr span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+        .manual-input{width:100%;background:var(--bg);border:1.5px solid var(--border2);border-radius:7px;color:var(--text);font-family:inherit;font-size:12px;padding:5px 8px;outline:none;transition:border-color .18s;-moz-appearance:textfield}
+        .manual-input::-webkit-outer-spin-button,.manual-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+        .manual-input:focus{border-color:var(--accent)}
+
+        /* chips */
+        .chip{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:3px 7px;font-size:11px;cursor:grab;user-select:none;transition:box-shadow .15s,border-color .15s,opacity .15s;max-width:260px}
+        .chip:hover{border-color:var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.08)}
+        .chip.dragging{opacity:.3;cursor:grabbing}
+        .chip.selected{border-color:var(--accent);background:rgba(45,106,79,.12);box-shadow:0 0 0 2px rgba(45,106,79,.2)}
+        .chip-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+        .chip-score{font-size:10px;color:var(--muted);flex-shrink:0;white-space:nowrap}
+        .chip-x{color:var(--muted);font-size:12px;cursor:pointer;flex-shrink:0;line-height:1}
+        .chip-x:hover{color:var(--red)}
+        .chip-manual{border-color:rgba(45,106,79,.35);background:rgba(45,106,79,.07)}
+        /* multiselect toolbar */
+        .multiselect-bar{display:none;align-items:center;gap:10px;background:rgba(45,106,79,.08);border:1.5px solid rgba(45,106,79,.2);border-radius:9px;padding:8px 14px;margin-bottom:10px;font-size:12px;font-weight:600;color:var(--accent)}
+        .multiselect-bar.visible{display:flex}
+        .multiselect-label{flex:1}
+        .cat-select{background:var(--bg);border:1.5px solid var(--border2);border-radius:7px;color:var(--text);font-family:inherit;font-size:12px;padding:5px 8px;outline:none;min-width:140px}
+        .cat-select:focus{border-color:var(--accent)}
+
+        /* ── FINAL GRADE CALC TAB ── */
+        .calc-wrap{max-width:560px}
+        .calc-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:16px}
+        .calc-title{font-family:'Playfair Display',serif;font-weight:600;font-size:16px;margin-bottom:16px}
+        .calc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;align-items:end}
+        .field-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+        .field-input{width:100%;background:var(--bg);border:1.5px solid var(--border2);border-radius:8px;color:var(--text);font-family:inherit;font-size:14px;padding:9px 12px;outline:none;transition:border-color .18s;-moz-appearance:textfield}
+        .field-input::-webkit-outer-spin-button,.field-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+        .field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,106,79,.1)}
+        .calc-result{background:rgba(45,106,79,.08);border:1.5px solid rgba(45,106,79,.2);border-radius:10px;padding:18px;text-align:center;margin-top:16px;display:none}
+        .calc-result-val{font-family:'Playfair Display',serif;font-weight:700;font-size:28px;color:var(--accent)}
+        .calc-result-lbl{font-size:12px;color:var(--muted);margin-top:4px}
+        .calc-result.impossible{background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.2)}
+        .calc-result.impossible .calc-result-val{color:var(--red)}
+        .calc-info{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+        /* ── TO-DO TAB ── */
+        .todo-wrap{max-width:700px}
+        .todo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+        .todo-title{font-family:'Playfair Display',serif;font-weight:600;font-size:18px}
+        .todo-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+        .todo-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .15s}
+        .todo-item:last-child{border-bottom:none}
+        .todo-item.done{background:rgba(45,106,79,.04)}
+        .todo-item.done .todo-name{text-decoration:line-through;color:var(--muted)}
+        .todo-item.ignored{opacity:.45}
+        .todo-item.ignored .todo-name{text-decoration:line-through}
+        .todo-cb{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+        .todo-name{flex:1;font-size:13px;font-weight:500}
+        .todo-due{font-size:11px;color:var(--muted);flex-shrink:0;white-space:nowrap}
+        .todo-due.overdue{color:var(--red);font-weight:600}
+        .todo-empty{padding:32px;text-align:center;color:var(--muted);font-size:13px}
+        .todo-filter{display:flex;gap:8px;margin-bottom:14px}
+        .filter-btn{font-size:12px;padding:5px 12px;border-radius:20px}
+        .filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+        .spinner{width:22px;height:22px;border:2px solid rgba(45,106,79,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:48px auto;display:block}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading-msg{text-align:center;color:var(--muted);font-size:13px;margin-top:8px}
+        @media(max-width:900px){.grades-layout{grid-template-columns:1fr}.cats-body{max-height:none}}
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="topbar">
+        <button class="btn btn-ghost btn-sm" id="back-btn">← Back</button>
+        <div class="course-title" id="course-title">Loading…</div>
+        <div class="save-status" id="save-status"></div>
+        <div class="alien">👾</div>
+    </div>
+
+    <div id="loading"><span class="spinner"></span><div class="loading-msg">Fetching grades…</div></div>
+
+    <div id="main" style="display:none">
+        <div class="summary-bar" id="summary-bar"></div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('grades',this)">Grades</div>
+            <div class="tab" onclick="switchTab('calc',this)">Final Grade Calculator</div>
+            <div class="tab" onclick="switchTab('todo',this)">To-Do List</div>
+        </div>
+
+        <!-- ── TAB: GRADES ── -->
+        <div class="tab-panel active" id="tab-grades">
+            <div class="grades-layout">
+                <!-- COL 1: pool -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">All Assignments</div>
+                        <span style="font-size:11px;color:var(--muted)">Drag → into category</span>
+                    </div>
+                    <div style="padding:10px 12px 0">
+                        <div class="multiselect-bar" id="multiselect-bar">
+                            <span class="multiselect-label" id="multiselect-label">0 selected</span>
+                            <select class="cat-select" id="multiselect-cat">
+                                <option value="">— Move to category —</option>
+                            </select>
+                            <button class="btn btn-sm" onclick="moveSelected()">Move</button>
+                            <button class="btn btn-ghost btn-sm" onclick="clearSelection()">Clear</button>
+                        </div>
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Click to select · Drag to move individually</div>
+                    </div>
+                    <div class="pool-body" id="pool"
+                         ondragover="onDragOver(event,'__pool__')"
+                         ondragleave="onDragLeave(event,'__pool__')"
+                         ondrop="onDrop(event,'__pool__')">
+                        <div class="chip-pool" id="pool-chips"></div>
+                    </div>
+                </div>
+
+                <!-- COL 2: categories -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Grade Categories</div>
+                        <button class="btn btn-ghost btn-sm" onclick="addCategory()">＋ Add</button>
+                    </div>
+                    <div class="cats-body">
+                        <div id="cat-rows"></div>
+                        <div class="weight-total" id="weight-total">Total: 0%</div>
+                        <div id="dropzones"></div>
+                    </div>
+                </div>
+
+                <!-- COL 3: manual -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Manual Assignments</div>
+                        <button class="btn btn-ghost btn-sm" onclick="addManual()">＋ Add</button>
+                    </div>
+                    <div class="manual-body">
+                        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Add grades not on Gradescope — they appear in the pool to drag into categories.</div>
+                        <div class="manual-hdr"><span>Name</span><span>Earned</span><span>Poss.</span><span></span></div>
+                        <div id="manual-rows"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TAB: FINAL GRADE CALC ── -->
+        <div class="tab-panel" id="tab-calc">
+            <div class="calc-wrap">
+                <div class="calc-card">
+                    <div class="calc-title">Final Grade Calculator</div>
+                    <div class="calc-row">
+                        <div>
+                            <div class="field-label">Current Grade (%)</div>
+                            <input class="field-input" type="text" inputmode="decimal" id="calc-current" placeholder="e.g. 88.5" oninput="runCalc()" />
+                        </div>
+                        <div>
+                            <div class="field-label">Current Weight (%)</div>
+                            <input class="field-input" type="text" inputmode="decimal" id="calc-weight" placeholder="e.g. 70" oninput="runCalc()" />
+                        </div>
+                    </div>
+                    <div class="calc-row">
+                        <div>
+                            <div class="field-label">Final Exam Weight (%)</div>
+                            <input class="field-input" type="text" inputmode="decimal" id="calc-final-weight" placeholder="e.g. 30" oninput="runCalc()" />
+                        </div>
+                        <div>
+                            <div class="field-label">Desired Grade (%)</div>
+                            <input class="field-input" type="text" inputmode="decimal" id="calc-desired" placeholder="e.g. 90" oninput="runCalc()" />
+                        </div>
+                    </div>
+                    <button class="btn" onclick="prefillCalc()">↙ Use My Weighted Grade</button>
+                    <div class="calc-result" id="calc-result">
+                        <div class="calc-result-val" id="calc-result-val">—</div>
+                        <div class="calc-result-lbl" id="calc-result-lbl"></div>
+                    </div>
+                    <div class="calc-info" id="calc-info"></div>
+                </div>
+                <div class="calc-card" style="font-size:13px;color:var(--text2)">
+                    <div class="calc-title" style="font-size:14px;margin-bottom:8px">How it works</div>
+                    Final needed = (Desired − Current × Current Weight%) ÷ Final Exam Weight%<br><br>
+                    Example: If you have 88% so far covering 70% of your grade, and your final is worth 30%, and you want 90%:<br>
+                    (90 − 88 × 0.70) ÷ 0.30 = <strong>95.3%</strong> needed on the final.
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TAB: TO-DO ── -->
+        <div class="tab-panel" id="tab-todo">
+            <div class="todo-wrap">
+                <div class="todo-header">
+                    <div class="todo-title">Unsubmitted Assignments</div>
+                    <div class="todo-filter">
+                        <button class="btn btn-ghost btn-sm filter-btn active" id="filter-all" onclick="setFilter('all',this)">All</button>
+                        <button class="btn btn-ghost btn-sm filter-btn" id="filter-pending" onclick="setFilter('pending',this)">Pending</button>
+                        <button class="btn btn-ghost btn-sm filter-btn" id="filter-done" onclick="setFilter('done',this)">Checked Off</button>
+                        <button class="btn btn-ghost btn-sm filter-btn" id="filter-ignored" onclick="setFilter('ignored',this)">Ignored</button>
+                    </div>
+                </div>
+                <div class="todo-card" id="todo-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var COURSE_ID   = '';
+var ASSIGNMENTS = [];
+var CATEGORIES  = [];
+var BUCKETS     = {};
+var MANUAL      = [];
+var UNASSIGNED  = [];
+var UNSUBMITTED = [];
+var TODO_DONE   = {};
+var TODO_FILTER = 'all';
+var dragging    = null;
+var GS_SUMMARY  = null;
+var WEIGHTED_PCT = null;
+var SELECTED    = {};   // name -> true for multiselect
+
+(function() {
+    var p = new URLSearchParams(window.location.search);
+    COURSE_ID = p.get('id') || '';
+    var name  = decodeURIComponent(p.get('name') || 'Course');
+    document.getElementById('course-title').textContent = name;
+    document.title = name;
+    document.getElementById('back-btn').addEventListener('click', function(){ window.history.back(); });
+    // Load todo checked state from localStorage
+    try { TODO_DONE = JSON.parse(localStorage.getItem('todo_' + COURSE_ID) || '{}'); } catch(e) { TODO_DONE = {}; }
+    loadData();
+})();
+
+function post(params) {
+    return fetch('/~student89/gradescope2.py', {
+        method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(params)
+    }).then(function(r){ return r.text(); }).then(function(t){ return JSON.parse(t); });
+}
+
+function loadData() {
+    post({ action:'course_data', course_id:COURSE_ID })
+    .then(function(d) {
+        if (!d.ok) { alert('Error: ' + d.error); return; }
+        ASSIGNMENTS  = d.assignments;
+        GS_SUMMARY   = d.summary;
+        UNSUBMITTED  = d.unsubmitted || [];
+        var w = d.weights;
+        CATEGORIES   = w.categories  || [];
+        BUCKETS      = w.assignments || {};
+        MANUAL       = w.manual      || [];
+        syncUnassigned();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('main').style.display    = '';
+        WEIGHTED_PCT = calcWeighted();
+        renderSummary();
+        renderAll();
+        renderTodo();
+    })
+    .catch(function(e){ alert('Failed: ' + e.message); });
+}
+
+function syncUnassigned() {
+    var assigned = {};
+    Object.keys(BUCKETS).forEach(function(cat){ (BUCKETS[cat]||[]).forEach(function(n){ assigned[n]=true; }); });
+    UNASSIGNED = [];
+    ASSIGNMENTS.forEach(function(a){ if (!assigned[a.name]) UNASSIGNED.push(a.name); });
+    MANUAL.forEach(function(m){ if (m.name && !assigned[m.name]) UNASSIGNED.push(m.name); });
+}
+
+// ── helpers ───────────────────────────────────────────────────────────────────
+function gradeClass(p){ if(p>=90)return'ga'; if(p>=80)return'gb'; if(p>=70)return'gc'; return'gdf'; }
+function letterGrade(p){
+    if(p>=93)return'A'; if(p>=90)return'A-'; if(p>=87)return'B+'; if(p>=83)return'B';
+    if(p>=80)return'B-'; if(p>=77)return'C+'; if(p>=73)return'C'; if(p>=70)return'C-';
+    if(p>=67)return'D+'; if(p>=63)return'D'; if(p>=60)return'D-'; return'F';
+}
+
+function calcWeighted() {
+    var valid = CATEGORIES.filter(function(c){ return c.name && c.weight>0; });
+    if (!valid.length) return null;
+    var included = [];
+    valid.forEach(function(cat){
+        var names = BUCKETS[cat.name]||[];
+        var e=0,p=0;
+        names.forEach(function(n){ var a=findAssignment(n); if(a&&a.possible>0){e+=a.earned;p+=a.possible;} });
+        if (p>0) included.push({weight:cat.weight,pct:(e/p)*100});
+    });
+    if (!included.length) return null;
+    var tw = included.reduce(function(s,x){return s+x.weight;},0);
+    return included.reduce(function(s,x){return s+(x.weight/tw)*x.pct;},0);
+}
+
+function renderSummary() {
+    var bar = document.getElementById('summary-bar');
+    var gs  = GS_SUMMARY;
+    var w   = WEIGHTED_PCT;
+    var html = '';
+    if (gs) {
+        var cls = gradeClass(gs.pct);
+        if (w !== null) {
+            var wcls = gradeClass(w);
+            html += '<div class="summary-card"><div class="summary-val '+wcls+'">'+w.toFixed(1)+'%</div><div class="summary-lbl">Weighted Grade</div></div>'+
+                    '<div class="summary-card"><div class="summary-val '+wcls+'">'+letterGrade(w)+'</div><div class="summary-lbl">Letter Grade</div></div>'+
+                    '<div class="summary-card"><div class="summary-val '+cls+'" style="font-size:16px">'+gs.pct+'%</div><div class="summary-lbl">GS Cumulative</div></div>';
+        } else {
+            html += '<div class="summary-card"><div class="summary-val '+cls+'">'+gs.pct+'%</div><div class="summary-lbl">Cumulative Grade</div></div>'+
+                    '<div class="summary-card"><div class="summary-val '+cls+'">'+gs.letter+'</div><div class="summary-lbl">Letter Grade</div></div>';
+        }
+        html += '<div class="summary-card"><div class="summary-val">'+gs.earned+' / '+gs.possible+'</div><div class="summary-lbl">Points</div></div>'+
+                '<div class="summary-card"><div class="summary-val">'+gs.count+'</div><div class="summary-lbl">Graded Items</div></div>';
+    }
+    bar.innerHTML = html;
+}
+
+// ── tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    el.classList.add('active');
+    document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ── render all ────────────────────────────────────────────────────────────────
+function renderAll() {
+    renderCategories();
+    renderDropzones();
+    renderPool();
+    renderManual();
+}
+
+function renderCategories() {
+    var el = document.getElementById('cat-rows');
+    el.innerHTML = '';
+    CATEGORIES.forEach(function(cat, i) {
+        var row = document.createElement('div');
+        row.className = 'cat-row';
+        row.innerHTML =
+            '<input class="cat-name-input" type="text" value="'+escH(cat.name)+'" placeholder="Category"'+
+                ' oninput="updateCatName('+i+',this.value)" />'+
+            '<div class="cat-weight-wrap">'+
+                '<input class="cat-weight-input" type="text" inputmode="decimal" value="'+cat.weight+'" placeholder="0"'+
+                    ' oninput="updateCatWeight('+i+',this.value)" />'+
+                '<span class="cat-pct-sym">%</span>'+
+            '</div>'+
+            '<button class="btn btn-danger btn-sm" onclick="removeCategory('+i+')">✕</button>';
+        el.appendChild(row);
+    });
+    updateWeightTotal();
+}
+
+function updateWeightTotal() {
+    var total = CATEGORIES.reduce(function(s,c){ return s+(parseFloat(c.weight)||0); }, 0);
+    var tw = document.getElementById('weight-total');
+    tw.textContent = 'Total: '+total.toFixed(0)+'%';
+    tw.className   = 'weight-total'+(total>100?' over':'');
+}
+
+function renderDropzones() {
+    var el = document.getElementById('dropzones');
+    el.innerHTML = '';
+    CATEGORIES.forEach(function(cat) {
+        var names = BUCKETS[cat.name]||[];
+        var e=0,p=0;
+        names.forEach(function(n){ var a=findAssignment(n); if(a&&a.possible>0){e+=a.earned;p+=a.possible;} });
+        var catPct = p>0?(e/p*100).toFixed(1)+'%':'—';
+        var dz = document.createElement('div');
+        dz.className='dropzone'; dz.id='dz-'+safe(cat.name); dz.setAttribute('data-cat',cat.name);
+        dz.ondragover=function(ev){onDragOver(ev,cat.name);}; dz.ondragleave=function(ev){onDragLeave(ev,cat.name);}; dz.ondrop=function(ev){onDrop(ev,cat.name);};
+        var chips = names.map(function(n){return buildChip(n,cat.name);}).join('');
+        dz.innerHTML='<div class="dropzone-label">'+escH(cat.name)+' · '+cat.weight+'%<span>'+catPct+'</span></div>'+
+                     '<div class="dropzone-chips">'+(chips||'<span class="dropzone-hint">Drop here</span>')+'</div>';
+        el.appendChild(dz);
+    });
+}
+
+function renderPool() {
+    var el = document.getElementById('pool-chips');
+    el.innerHTML = UNASSIGNED.length
+        ? UNASSIGNED.map(function(n){return buildChip(n,'__pool__');}).join('')
+        : '<span style="font-size:12px;color:var(--muted);display:block;padding:8px 0">All assigned!</span>';
+}
+
+function renderManual() {
+    var el = document.getElementById('manual-rows');
+    el.innerHTML = '';
+    MANUAL.forEach(function(m, i) {
+        var row = document.createElement('div');
+        row.className = 'manual-row';
+        row.innerHTML =
+            '<input class="manual-input" type="text" value="'+escH(m.name)+'" placeholder="Final Exam"'+
+                ' oninput="updateManual('+i+',\'name\',this.value)" />'+
+            '<input class="manual-input" type="text" inputmode="decimal" value="'+m.earned+'" placeholder="0"'+
+                ' oninput="updateManual('+i+',\'earned\',this.value)" />'+
+            '<input class="manual-input" type="text" inputmode="decimal" value="'+m.possible+'" placeholder="100"'+
+                ' oninput="updateManual('+i+',\'possible\',this.value)" />'+
+            '<button class="btn btn-danger btn-sm" onclick="removeManual('+i+')">✕</button>';
+        el.appendChild(row);
+    });
+}
+
+function buildChip(name, fromCat) {
+    var a=findAssignment(name), score=a?(a.earned.toFixed(1)+'/'+a.possible.toFixed(1)):'', isMan=isManual(name);
+    var isSelected = fromCat==='__pool__' && SELECTED[name];
+    var cls = 'chip'+(isMan?' chip-manual':'')+(isSelected?' selected':'');
+    var click = fromCat==='__pool__' ? ' onclick="toggleSelect(''+escA(name)+'')"' : '';
+    var removeX = fromCat!=='__pool__'
+        ? '<span class="chip-x" onclick="event.stopPropagation();returnToPool(''+escA(fromCat)+'',''+escA(name)+'')">×</span>'
+        : '';
+    return '<div class="'+cls+'" draggable="true" data-name="'+escA(name)+'" data-from="'+escA(fromCat)+'"'+
+           click+' ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">'+
+           '<span class="chip-name" title="'+escA(name)+'">'+escH(name)+'</span>'+
+           (score?'<span class="chip-score">'+score+'</span>':'')+
+           removeX+
+           '</div>';
+}
+
+// ── drag & drop ───────────────────────────────────────────────────────────────
+function onDragStart(e){
+    var name = e.target.getAttribute('data-name');
+    var from = e.target.getAttribute('data-from');
+    // If dragging a non-selected chip from pool, clear selection to avoid confusion
+    if (from === '__pool__' && !SELECTED[name]) clearSelection();
+    dragging={name:name,from:from};
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+}
+function onDragEnd(e){e.target.classList.remove('dragging');dragging=null;}
+function onDragOver(e,cat){e.preventDefault();e.dataTransfer.dropEffect='move';var el=cat==='__pool__'?document.getElementById('pool'):document.getElementById('dz-'+safe(cat));if(el)el.classList.add('drag-over');}
+function onDragLeave(e,cat){var el=cat==='__pool__'?document.getElementById('pool'):document.getElementById('dz-'+safe(cat));if(el)el.classList.remove('drag-over');}
+function onDrop(e,toCat){
+    e.preventDefault();
+    var el=toCat==='__pool__'?document.getElementById('pool'):document.getElementById('dz-'+safe(toCat));
+    if(el)el.classList.remove('drag-over');
+    if(!dragging||dragging.from===toCat)return;
+    var name=dragging.name,from=dragging.from;
+    if(from==='__pool__')UNASSIGNED=UNASSIGNED.filter(function(n){return n!==name;});
+    else BUCKETS[from]=(BUCKETS[from]||[]).filter(function(n){return n!==name;});
+    if(toCat==='__pool__')UNASSIGNED.push(name);
+    else{if(!BUCKETS[toCat])BUCKETS[toCat]=[];BUCKETS[toCat].push(name);}
+    WEIGHTED_PCT=calcWeighted(); renderSummary(); renderDropzones(); renderPool(); scheduleSave();
+}
+function returnToPool(cat,name){
+    BUCKETS[cat]=(BUCKETS[cat]||[]).filter(function(n){return n!==name;});
+    UNASSIGNED.push(name);
+    WEIGHTED_PCT=calcWeighted(); renderSummary(); renderDropzones(); renderPool(); scheduleSave();
+}
+
+// ── categories ────────────────────────────────────────────────────────────────
+function addCategory(){CATEGORIES.push({name:'',weight:0});renderAll();scheduleSave();}
+function removeCategory(i){
+    var cat=CATEGORIES[i];
+    (BUCKETS[cat.name]||[]).forEach(function(n){UNASSIGNED.push(n);}); delete BUCKETS[cat.name];
+    CATEGORIES.splice(i,1); WEIGHTED_PCT=calcWeighted(); renderSummary(); renderAll(); scheduleSave();
+}
+function updateCatName(i,val){
+    var old=CATEGORIES[i].name; CATEGORIES[i].name=val;
+    if(BUCKETS[old]!==undefined){BUCKETS[val]=BUCKETS[old];delete BUCKETS[old];}
+    renderDropzones(); scheduleSave();
+}
+function updateCatWeight(i,val){
+    CATEGORIES[i].weight=parseFloat(val)||0;
+    updateWeightTotal(); renderDropzones();
+    WEIGHTED_PCT=calcWeighted(); renderSummary(); scheduleSave();
+}
+
+// ── manual ────────────────────────────────────────────────────────────────────
+function addManual(){MANUAL.push({name:'',earned:0,possible:100});renderManual();scheduleSave();}
+function removeManual(i){
+    var name=MANUAL[i].name; MANUAL.splice(i,1);
+    Object.keys(BUCKETS).forEach(function(cat){BUCKETS[cat]=(BUCKETS[cat]||[]).filter(function(n){return n!==name;});});
+    UNASSIGNED=UNASSIGNED.filter(function(n){return n!==name;});
+    WEIGHTED_PCT=calcWeighted(); renderSummary(); renderAll(); scheduleSave();
+}
+function updateManual(i,field,val){
+    var oldName=MANUAL[i].name;
+    if(field==='name'){
+        MANUAL[i].name=val;
+        Object.keys(BUCKETS).forEach(function(cat){BUCKETS[cat]=(BUCKETS[cat]||[]).map(function(n){return n===oldName?val:n;});});
+        UNASSIGNED=UNASSIGNED.map(function(n){return n===oldName?val:n;});
+        var inBucket=false;
+        Object.keys(BUCKETS).forEach(function(cat){if((BUCKETS[cat]||[]).indexOf(val)>-1)inBucket=true;});
+        if(!inBucket&&val&&UNASSIGNED.indexOf(val)===-1){UNASSIGNED=UNASSIGNED.filter(function(n){return n!==oldName;});UNASSIGNED.push(val);}
+        renderPool(); renderDropzones();
+    } else {
+        MANUAL[i][field]=parseFloat(val)||0;
+        WEIGHTED_PCT=calcWeighted(); renderSummary(); renderDropzones();
+    }
+    scheduleSave();
+}
+
+// ── final grade calculator ────────────────────────────────────────────────────
+function prefillCalc(){
+    var w = WEIGHTED_PCT;
+    if(w===null){alert('Set up grade categories first to use your weighted grade.');return;}
+    document.getElementById('calc-current').value = w.toFixed(1);
+    // Estimate current weight from categories
+    var totalW = CATEGORIES.reduce(function(s,c){return s+(parseFloat(c.weight)||0);},0);
+    document.getElementById('calc-weight').value = totalW.toFixed(0);
+    if(totalW<=100){document.getElementById('calc-final-weight').value=(100-totalW).toFixed(0);}
+    runCalc();
+}
+
+function runCalc(){
+    var current     = parseFloat(document.getElementById('calc-current').value);
+    var curWeight   = parseFloat(document.getElementById('calc-weight').value);
+    var finalWeight = parseFloat(document.getElementById('calc-final-weight').value);
+    var desired     = parseFloat(document.getElementById('calc-desired').value);
+    var resEl       = document.getElementById('calc-result');
+    var valEl       = document.getElementById('calc-result-val');
+    var lblEl       = document.getElementById('calc-result-lbl');
+    var infoEl      = document.getElementById('calc-info');
+
+    if(isNaN(current)||isNaN(curWeight)||isNaN(finalWeight)||isNaN(desired)||finalWeight<=0){
+        resEl.style.display='none'; infoEl.textContent=''; return;
+    }
+    // Formula: needed = (desired - current * (curWeight/100)) / (finalWeight/100)
+    var needed = (desired - current*(curWeight/100)) / (finalWeight/100);
+    resEl.style.display='block';
+    resEl.classList.remove('impossible');
+
+    if(needed>100){
+        resEl.classList.add('impossible');
+        valEl.textContent=needed.toFixed(1)+'%';
+        lblEl.textContent='needed on final — not achievable (would need extra credit)';
+    } else if(needed<0){
+        valEl.textContent='0%';
+        lblEl.textContent='needed on final — you\'ve already secured your desired grade!';
+    } else {
+        valEl.textContent=needed.toFixed(1)+'%';
+        lblEl.textContent='needed on final exam to achieve '+desired+'%  ('+letterGrade(desired)+')';
+    }
+    infoEl.textContent='Current: '+current+'% × '+curWeight+'% + Final: '+finalWeight+'% → Target: '+desired+'% ('+letterGrade(desired)+')';
+}
+
+// ── to-do list ────────────────────────────────────────────────────────────────
+function renderTodo(){
+    var el  = document.getElementById('todo-list');
+    var now = new Date();
+    var all = UNSUBMITTED;
+    var items = all.filter(function(a){
+        if (TODO_FILTER==='done')    return TODO_DONE[a.name] === 'done';
+        if (TODO_FILTER==='ignored') return TODO_DONE[a.name] === 'ignored';
+        if (TODO_FILTER==='pending') return !TODO_DONE[a.name];
+        return TODO_DONE[a.name] !== 'ignored'; // 'all' hides ignored unless in ignored tab
+    });
+    if(!items.length){
+        var msg = UNSUBMITTED.length===0 ? '🎉 Nothing unsubmitted!' : 'No items match this filter.';
+        el.innerHTML='<div class="todo-empty">'+msg+'</div>';
+        return;
+    }
+    el.innerHTML = items.map(function(a){
+        var state   = TODO_DONE[a.name] || '';
+        var done    = state === 'done';
+        var ignored = state === 'ignored';
+        var due     = a.due_date ? new Date(a.due_date) : null;
+        var overdue = due && due < now;
+        var dueStr  = due ? due.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+        return '<div class="todo-item'+(done?' done':'')+(ignored?' ignored':'')+'">' +
+               '<input type="checkbox" class="todo-cb"'+(done?' checked':'')+
+                   ' onchange="setTodoState(''+escA(a.name)+'',this.checked?'done':'')" />' +
+               '<span class="todo-name">'+escH(a.name)+'</span>' +
+               (dueStr?'<span class="todo-due'+(overdue?' overdue':'')+'">'+
+                   (overdue?'Overdue · ':'')+dueStr+'</span>':'') +
+               '<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:3px 10px;color:var(--muted)" '+
+                   'onclick="setTodoState(''+escA(a.name)+'','ignored')" title="Ignore this assignment">Ignore</button>' +
+               '</div>';
+    }).join('');
+}
+
+
+function setTodoState(name, state){
+    if (state === '') delete TODO_DONE[name];
+    else TODO_DONE[name] = state;
+    try{localStorage.setItem('todo_'+COURSE_ID,JSON.stringify(TODO_DONE));}catch(e){}
+    renderTodo();
+}
+
+function setFilter(f,btn){
+    TODO_FILTER=f;
+    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    renderTodo();
+}
+
+// ── multiselect ───────────────────────────────────────────────────────────────
+function toggleSelect(name) {
+    if (SELECTED[name]) delete SELECTED[name];
+    else SELECTED[name] = true;
+    updateMultiselectBar();
+    renderPool();
+}
+
+function updateMultiselectBar() {
+    var count  = Object.keys(SELECTED).length;
+    var bar    = document.getElementById('multiselect-bar');
+    var label  = document.getElementById('multiselect-label');
+    var sel    = document.getElementById('multiselect-cat');
+    bar.className = count > 0 ? 'multiselect-bar visible' : 'multiselect-bar';
+    label.textContent = count + ' selected';
+    // Rebuild category options
+    sel.innerHTML = '<option value="">— Move to category —</option>';
+    CATEGORIES.forEach(function(cat) {
+        if (cat.name) {
+            var opt = document.createElement('option');
+            opt.value = cat.name;
+            opt.textContent = cat.name;
+            sel.appendChild(opt);
+        }
+    });
+}
+
+function moveSelected() {
+    var toCat = document.getElementById('multiselect-cat').value;
+    if (!toCat) { alert('Please choose a category first.'); return; }
+    if (!BUCKETS[toCat]) BUCKETS[toCat] = [];
+    Object.keys(SELECTED).forEach(function(name) {
+        UNASSIGNED = UNASSIGNED.filter(function(n){ return n !== name; });
+        BUCKETS[toCat].push(name);
+    });
+    SELECTED = {};
+    WEIGHTED_PCT = calcWeighted();
+    renderSummary(); renderDropzones(); renderPool();
+    updateMultiselectBar();
+    scheduleSave();
+}
+
+function clearSelection() {
+    SELECTED = {};
+    updateMultiselectBar();
+    renderPool();
+}
+
+// ── save ──────────────────────────────────────────────────────────────────────
+var saveTimer=null;
+function scheduleSave(){clearTimeout(saveTimer);document.getElementById('save-status').textContent='Saving…';saveTimer=setTimeout(doSave,1000);}
+function doSave(){
+    var data={categories:CATEGORIES,assignments:BUCKETS,manual:MANUAL};
+    post({action:'save_weights',course_id:COURSE_ID,data:JSON.stringify(data)})
+    .then(function(d){var el=document.getElementById('save-status');el.textContent=d.ok?'✓ Saved':'⚠ Save failed';setTimeout(function(){el.textContent='';},2500);});
+}
+
+// ── utils ─────────────────────────────────────────────────────────────────────
+function findAssignment(name){for(var i=0;i<ASSIGNMENTS.length;i++){if(ASSIGNMENTS[i].name===name)return ASSIGNMENTS[i];}for(var j=0;j<MANUAL.length;j++){if(MANUAL[j].name===name)return MANUAL[j];}return null;}
+function isManual(name){for(var j=0;j<MANUAL.length;j++){if(MANUAL[j].name===name)return true;}return false;}
+function safe(s){return String(s).replace(/[^a-zA-Z0-9]/g,'_');}
+function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escA(s){return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+</script>
+</body>
+</html>
