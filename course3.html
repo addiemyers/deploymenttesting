@@ -478,18 +478,28 @@ function renderManual() {
 }
 
 function buildChip(name, fromCat) {
-    var a=findAssignment(name), score=a?(a.earned.toFixed(1)+'/'+a.possible.toFixed(1)):'', isMan=isManual(name);
-    var isSelected = fromCat==='__pool__' && SELECTED[name];
-    var cls = 'chip'+(isMan?' chip-manual':'')+(isSelected?' selected':'');
-    var click = fromCat==='__pool__' ? ' onclick="toggleSelect(''+escA(name)+'')"' : '';
-    var removeX = fromCat!=='__pool__'
-        ? '<span class="chip-x" onclick="event.stopPropagation();returnToPool(''+escA(fromCat)+'',''+escA(name)+'')">×</span>'
+    var a = findAssignment(name), 
+        score = a ? (a.earned.toFixed(1) + '/' + a.possible.toFixed(1)) : '', 
+        isMan = isManual(name);
+    
+    var isSelected = fromCat === '__pool__' && SELECTED[name];
+    var cls = 'chip' + (isMan ? ' chip-manual' : '') + (isSelected ? ' selected' : '');
+    
+    // Fixed using template literals (backticks) to easily nest single quotes
+    var click = fromCat === '__pool__' 
+        ? ` onclick="toggleSelect('${escA(name)}')"` 
         : '';
-    return '<div class="'+cls+'" draggable="true" data-name="'+escA(name)+'" data-from="'+escA(fromCat)+'"'+
-           click+' ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">'+
-           '<span class="chip-name" title="'+escA(name)+'">'+escH(name)+'</span>'+
-           (score?'<span class="chip-score">'+score+'</span>':'')+
-           removeX+
+        
+    // Fixed using template literals here as well
+    var removeX = fromCat !== '__pool__'
+        ? `<span class="chip-x" onclick="event.stopPropagation();returnToPool('${escA(fromCat)}','${escA(name)}')">×</span>`
+        : '';
+        
+    return '<div class="' + cls + '" draggable="true" data-name="' + escA(name) + '" data-from="' + escA(fromCat) + '"' +
+           click + ' ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">' +
+           '<span class="chip-name" title="' + escA(name) + '">' + escH(name) + '</span>' +
+           (score ? '<span class="chip-score">' + score + '</span>' : '') +
+           removeX +
            '</div>';
 }
 
