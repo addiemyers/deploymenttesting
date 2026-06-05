@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Pop-Tart Tier List</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --border-color: #444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ffb703;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        p.subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        /* Tier List Container */
+        .tier-list {
+            width: 100%;
+            max-width: 1000px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Tier Row Layout */
+        .tier-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            min-height: 100px;
+            background-color: #222;
+        }
+
+        .tier-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Tier Labels */
+        .tier-label {
+            width: 100px;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+            user-select: none;
+        }
+
+        /* Label Colors */
+        .s-tier { background-color: #ff7f7f; }
+        .a-tier { background-color: #ffbf7f; }
+        .b-tier { background-color: #ffdf7f; }
+        .c-tier { background-color: #ffff7f; }
+        .d-tier { background-color: #bfff7f; }
+        .f-tier { background-color: #7fff7f; }
+
+        /* Drop Zones */
+        .tier-bench {
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 10px;
+            align-content: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .tier-bench.drag-over {
+            background-color: #333;
+        }
+
+        /* Flavor Pool (Unranked items) */
+        .pool-container {
+            width: 100%;
+            max-width: 1000px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .pool-container h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #ffb703;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .flavor-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 120px;
+            padding: 10px;
+        }
+
+        /* Pop-Tart Items */
+        .poptart-card {
+            background: linear-gradient(135deg, #e6c594 0%, #cfa670 100%);
+            color: #333;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: grab;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            user-select: none;
+            border: 2px solid #b08d5b;
+            text-align: center;
+            max-width: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .poptart-card:active {
+            cursor: grabbing;
+        }
+
+        .poptart-card.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Pop-Tart Tier List Ranker</h1>
+    <p class="subtitle">Drag and drop the flavors to rank them from God-Tier to Literal Garbage</p>
+
+    <!-- The Tier List Grid -->
+    <div class="tier-list">
+        <div class="tier-row">
+            <div class="tier-label s-tier">S</div>
+            <div class="tier-bench" data-tier="S"></div>
+        </div>
+        <div class="tier-row">
+            <div class="tier-label a-tier">A</div>
+            <div class="tier-bench" data-tier="A"></div>
+        </div>
+        <div class="tier-row">
+            <div class="tier-label b-tier">B</div>
+            <div class="tier-bench" data-tier="B"></div>
+        </div>
+        <div class="tier-row">
+            <div class="tier-label c-tier">C</div>
+            <div class="tier-bench" data-tier="C"></div>
+        </div>
+        <div class="tier-row">
+            <div class="tier-label d-tier">D</div>
+            <div class="tier-bench" data-tier="D"></div>
+        </div>
+        <div class="tier-row">
+            <div class="tier-label f-tier">F</div>
+            <div class="tier-bench" data-tier="F"></div>
+        </div>
+    </div>
+
+    <!-- The Pool of Unranked Pop-Tarts -->
+    <div class="pool-container">
+        <h2>Unranked Flavors</h2>
+        <div class="flavor-pool tier-bench" data-tier="none">
+            <div class="poptart-card" draggable="true" id="pt-1">Strawberry (Frosted)</div>
+            <div class="poptart-card" draggable="true" id="pt-2">Brown Sugar Cinnamon</div>
+            <div class="poptart-card" draggable="true" id="pt-3">Cookies & Cream</div>
+            <div class="poptart-card" draggable="true" id="pt-4">S'mores</div>
+            <div class="poptart-card" draggable="true" id="pt-5">Blueberry (Frosted)</div>
+            <div class="poptart-card" draggable="true" id="pt-6">Cherry (Frosted)</div>
+            <div class="poptart-card" draggable="true" id="pt-7">Hot Fudge Sundae</div>
+            <div class="poptart-card" draggable="true" id="pt-8">Wild Berry</div>
+            <div class="poptart-card" draggable="true" id="pt-9">Raspberry</div>
+            <div class="poptart-card" draggable="true" id="pt-10">Chocolate Fudge</div>
+            <div class="poptart-card" draggable="true" id="pt-11">Unfrosted Strawberry</div>
+            <div class="poptart-card" draggable="true" id="pt-12">Red Velvet Cupcake</div>
+        </div>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.poptart-card');
+        const benches = document.querySelectorAll('.tier-bench');
+
+        cards.forEach(card => {
+            // Drag Start
+            card.addEventListener('dragstart', () => {
+                card.classList.add('dragging');
+            });
+
+            // Drag End
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+                benches.forEach(bench => bench.classList.remove('drag-over'));
+            });
+        });
+
+        benches.forEach(bench => {
+            // Drag Over (Crucial to allow dropping)
+            bench.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                bench.classList.add('drag-over');
+            });
+
+            // Drag Leave
+            bench.addEventListener('dragleave', () => {
+                bench.classList.remove('drag-over');
+            });
+
+            // Drop Event
+            bench.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const draggingCard = document.querySelector('.dragging');
+                if (draggingCard) {
+                    bench.appendChild(draggingCard);
+                }
+                bench.classList.remove('drag-over');
+            });
+        });
+    </script>
+</body>
+</html>
