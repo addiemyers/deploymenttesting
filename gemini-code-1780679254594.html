@@ -4,26 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Ultimate Pop-Tart Tier List</title>
-    <!-- Modern Sans-Serif Font -->
+    <!-- Premium Geometric Sans-Serif Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #0f1115;
-            --panel-bg: rgba(255, 255, 255, 0.03);
-            --panel-border: rgba(255, 255, 255, 0.08);
+            --bg-color: #0b0d11;
+            --panel-bg: rgba(255, 255, 255, 0.02);
+            --panel-border: rgba(255, 255, 255, 0.06);
             --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
+            --text-muted: #6b7280;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 40px 20px;
+            padding: 50px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -33,265 +33,318 @@
 
         h1 {
             font-weight: 800;
-            font-size: 2.5rem;
-            margin: 0 0 8px 0;
-            letter-spacing: -0.05em;
-            background: linear-gradient(135deg, #fff 0%, #9ca3af 100%);
+            font-size: 2.2rem;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.03em;
+            background: linear-gradient(180deg, #ffffff 0%, #a3a3a3 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         p.subtitle {
             color: var(--text-muted);
-            font-size: 0.95rem;
-            margin: 0 0 40px 0;
-            font-weight: 400;
+            font-size: 0.9rem;
+            margin: 0 0 45px 0;
+            font-weight: 500;
+            letter-spacing: 0.02em;
         }
 
-        /* Tier List Container */
+        /* Tier List Grid Container */
         .tier-list {
             width: 100%;
-            max-width: 1000px;
+            max-width: 950px;
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
             margin-bottom: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px);
         }
 
-        /* Tier Row Layout */
+        /* Tier Row */
         .tier-row {
             display: flex;
             border-bottom: 1px solid var(--panel-border);
-            min-height: 110px;
+            min-height: 120px;
         }
 
         .tier-row:last-child {
             border-bottom: none;
         }
 
-        /* Sleeker, Muted Tier Labels */
+        /* Sleek Minimalist Tier Labels */
         .tier-label {
-            width: 90px;
-            min-width: 90px;
+            width: 85px;
+            min-width: 85px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             user-select: none;
+            mix-blend-mode: normal;
         }
 
-        /* Modernized Neon/Pastel Labels */
-        .s-tier { background: linear-gradient(135deg, #ff5e62, #ff9966); }
-        .a-tier { background: linear-gradient(135deg, #ff9944, #ffbc00); }
-        .b-tier { background: linear-gradient(135deg, #f1c40f, #f39c12); }
-        .c-tier { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-        .d-tier { background: linear-gradient(135deg, #3498db, #2980b9); }
-        .f-tier { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        /* Premium Gradient Badges */
+        .s-tier { background: linear-gradient(135deg, #ff4b5c, #ff6b6b); }
+        .a-tier { background: linear-gradient(135deg, #ff8c00, #ffaa00); }
+        .b-tier { background: linear-gradient(135deg, #ffcc00, #ffe066); }
+        .c-tier { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
+        .d-tier { background: linear-gradient(135deg, #2e86de, #54a0ff); }
+        .f-tier { background: linear-gradient(135deg, #8395a7, #576574); }
 
-        /* Smooth Drop Zones */
+        /* Drop Zones */
         .tier-bench {
             flex-grow: 1;
             display: flex;
             flex-wrap: wrap;
-            padding: 12px;
-            gap: 12px;
+            padding: 14px;
+            gap: 14px;
             align-content: center;
-            transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 0.2s ease;
         }
 
         .tier-bench.drag-over {
-            background-color: rgba(255, 255, 255, 0.06);
+            background-color: rgba(255, 255, 255, 0.04);
         }
 
         /* Flavor Pool */
         .pool-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 950px;
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(16px);
         }
 
         .pool-container h2 {
-            margin: 0 0 16px 0;
-            font-size: 14px;
-            font-weight: 600;
+            margin: 0 0 20px 0;
+            font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            color: #4b5563;
         }
 
         .flavor-pool {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 14px;
             min-height: 140px;
         }
 
-        /* Sleek Modern Pop-Tart Cards */
+        /* Premium Drag & Drop Cards */
         .poptart-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 10px;
-            width: 105px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 12px;
+            width: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: grab;
-            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), 
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
                         background-color 0.2s, 
-                        box-shadow 0.2s,
-                        border-color 0.2s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        border-color 0.2s,
+                        box-shadow 0.25s;
         }
 
         .poptart-card:hover {
-            transform: translateY(-4px);
-            background: rgba(255, 255, 255, 0.09);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
         }
 
         .poptart-card:active {
             cursor: grabbing;
         }
 
-        /* Target Styling for Drag State */
         .poptart-card.dragging {
-            opacity: 0.3;
-            transform: scale(0.9);
+            opacity: 0.2;
+            transform: scale(0.92);
         }
 
-        /* Visual Box Inside Card */
+        /* Pop-Tart Image Box */
         .poptart-image-box {
             width: 100%;
-            height: 75px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        .poptart-image-box img {
+        /* Pure CSS Scalable Pop-Tarts */
+        .pt-art {
+            width: 50px;
+            height: 68px;
+            border-radius: 6px;
+            background: #e9c496; /* Crust base color */
+            position: relative;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Frosting Top Layer */
+        .pt-frosting {
+            width: 42px;
+            height: 58px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Sprinkles Layer */
+        .pt-frosting::before {
+            content: '';
+            position: absolute;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            top: 0;
+            left: 0;
+            opacity: 0.85;
         }
 
-        /* Smooth Typography for Labels */
+        /* Custom Frosting & Sprinkle Profiles */
+        .f-strawberry .pt-frosting { background: #fff0f5; }
+        .f-strawberry .pt-frosting::before {
+            background: radial-gradient(circle, #ff4d6d 20%, transparent 20%) 4px 4px/8px 12px,
+                        radial-gradient(circle, #ff758f 20%, transparent 20%) 2px 7px/10px 10px;
+        }
+
+        .f-cinnamon .pt-frosting { background: #b08968; border: 1px solid #7f5539;}
+        .f-cinnamon .pt-frosting::before {
+            background: radial-gradient(circle, #9c6644 15%, transparent 15%) 3px 3px/6px 8px;
+        }
+
+        .f-cookies .pt-frosting { background: #ffffff; }
+        .f-cookies .pt-frosting::before {
+            background: radial-gradient(circle, #2b2d42 25%, transparent 25%) 2px 2px/6px 6px,
+                        radial-gradient(circle, #1a1a1a 20%, transparent 20%) 5px 6px/8px 8px;
+        }
+
+        .f-smores .pt-frosting { background: #7f5539; }
+        .f-smores .pt-frosting::before {
+            background: linear-gradient(45deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%) 0 0/10px 10px;
+        }
+
+        .f-wildberry .pt-frosting { background: #d63031; }
+        .f-wildberry .pt-frosting::before {
+            background: linear-gradient(115deg, transparent 40%, #00cec9 40%, #00cec9 50%, transparent 50%) 0 0/15px 15px,
+                        linear-gradient(115deg, transparent 20%, #6c5ce7 20%, #6c5ce7 30%, transparent 30%) 5px 0/15px 15px;
+        }
+
+        .f-cherry .pt-frosting { background: #ff7675; }
+        .f-cherry .pt-frosting::before {
+            background: radial-gradient(circle, #d63031 20%, transparent 20%) 3px 5px/9px 9px;
+        }
+
+        .f-fudge .pt-frosting { background: #2d1e18; }
+        .f-fudge .pt-frosting::before {
+            background: radial-gradient(circle, #fff 15%, transparent 15%) 1px 1px/12px 12px;
+        }
+
+        .f-blueberry .pt-frosting { background: #74b9ff; }
+        .f-blueberry .pt-frosting::before {
+            background: radial-gradient(circle, #0984e3 20%, transparent 20%) 4px 2px/7px 9px,
+                        radial-gradient(circle, #d63031 20%, transparent 20%) 2px 5px/8px 8px;
+        }
+
+        /* Typography for Labels */
         .poptart-name {
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             text-align: center;
             line-height: 1.3;
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.8);
             word-break: break-word;
-            width: 100%;
         }
     </style>
 </head>
 <body>
 
     <h1>Pop-Tart Flavor Tier-List</h1>
-    <p class="subtitle">The Complete Ranking</p>
+    <p class="subtitle">The Complete Ranking System</p>
 
-    <!-- The Grid Setup -->
+    <!-- Grid Space Layout -->
     <div class="tier-list">
-        <div class="tier-row">
-            <div class="tier-label s-tier">S</div>
-            <div class="tier-bench" data-tier="S"></div>
-        </div>
-        <div class="tier-row">
-            <div class="tier-label a-tier">A</div>
-            <div class="tier-bench" data-tier="A"></div>
-        </div>
-        <div class="tier-row">
-            <div class="tier-label b-tier">B</div>
-            <div class="tier-bench" data-tier="B"></div>
-        </div>
-        <div class="tier-row">
-            <div class="tier-label c-tier">C</div>
-            <div class="tier-bench" data-tier="C"></div>
-        </div>
-        <div class="tier-row">
-            <div class="tier-label d-tier">D</div>
-            <div class="tier-bench" data-tier="D"></div>
-        </div>
-        <div class="tier-row">
-            <div class="tier-label f-tier">F</div>
-            <div class="tier-bench" data-tier="F"></div>
-        </div>
+        <div class="tier-row"><div class="tier-label s-tier">S</div><div class="tier-bench" data-tier="S"></div></div>
+        <div class="tier-row"><div class="tier-label a-tier">A</div><div class="tier-bench" data-tier="A"></div></div>
+        <div class="tier-row"><div class="tier-label b-tier">B</div><div class="tier-bench" data-tier="B"></div></div>
+        <div class="tier-row"><div class="tier-label c-tier">C</div><div class="tier-bench" data-tier="C"></div></div>
+        <div class="tier-row"><div class="tier-label d-tier">D</div><div class="tier-bench" data-tier="D"></div></div>
+        <div class="tier-row"><div class="tier-label f-tier">F</div><div class="tier-bench" data-tier="F"></div></div>
     </div>
 
-    <!-- The Modernized Pool -->
+    <!-- Active Flavor Selection Pool -->
     <div class="pool-container">
         <h2>Unranked Flavors</h2>
         <div class="flavor-pool tier-bench" data-tier="none">
             
             <div class="poptart-card" draggable="true" id="pt-1">
-                <div class="poptart-image-box" style="background-color: #ffb3ba;">
-                    <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?w=150&auto=format&fit=crop&q=60" alt="Strawberry">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-strawberry"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">Frosted Strawberry</div>
             </div>
 
             <div class="poptart-card" draggable="true" id="pt-2">
-                <div class="poptart-image-box" style="background-color: #ffdfba;">
-                    <img src="https://images.unsplash.com/photo-1600431521340-491eca880813?w=150&auto=format&fit=crop&q=60" alt="Cinnamon">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-cinnamon"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">Brown Sugar Cinnamon</div>
             </div>
 
             <div class="poptart-card" draggable="true" id="pt-3">
-                <div class="poptart-image-box" style="background-color: #baffc9;">
-                    <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=150&auto=format&fit=crop&q=60" alt="Cookies and Cream">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-cookies"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">Cookies & Cream</div>
             </div>
 
             <div class="poptart-card" draggable="true" id="pt-4">
-                <div class="poptart-image-box" style="background-color: #bae1ff;">
-                    <img src="https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=150&auto=format&fit=crop&q=60" alt="Smores">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-smores"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">S'mores</div>
             </div>
 
             <div class="poptart-card" draggable="true" id="pt-5">
-                <div class="poptart-image-box" style="background-color: #e8bae5;">
-                    <img src="https://images.unsplash.com/photo-1610431565576-90f707f5022f?w=150&auto=format&fit=crop&q=60" alt="Wild Berry">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-wildberry"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">Wild Berry</div>
             </div>
 
             <div class="poptart-card" draggable="true" id="pt-6">
-                <div class="poptart-image-box" style="background-color: #ffccd5;">
-                    <img src="https://images.unsplash.com/photo-1527018601619-a508a2be00cd?w=150&auto=format&fit=crop&q=60" alt="Cherry">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-cherry"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">Frosted Cherry</div>
             </div>
 
             <div class="poptart-card" draggable="true" id="pt-7">
-                <div class="poptart-image-box" style="background-color: #ffffba;">
-                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=150&auto=format&fit=crop&q=60" alt="Hot Fudge">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-fudge"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">Hot Fudge Sundae</div>
             </div>
 
             <div class="poptart-card" draggable="true" id="pt-8">
-                <div class="poptart-image-box" style="background-color: #d8f8e1;">
-                    <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?w=150&auto=format&fit=crop&q=60" alt="Blueberry">
+                <div class="poptart-image-box">
+                    <div class="pt-art f-blueberry"><div class="pt-frosting"></div></div>
                 </div>
                 <div class="poptart-name">Frosted Blueberry</div>
             </div>
@@ -299,16 +352,13 @@
         </div>
     </div>
 
-    <!-- Drag & Drop Engine -->
+    <!-- Interface Drag-Drop Logic -->
     <script>
         const cards = document.querySelectorAll('.poptart-card');
         const benches = document.querySelectorAll('.tier-bench');
 
         cards.forEach(card => {
-            card.addEventListener('dragstart', () => {
-                card.classList.add('dragging');
-            });
-
+            card.addEventListener('dragstart', () => card.classList.add('dragging'));
             card.addEventListener('dragend', () => {
                 card.classList.remove('dragging');
                 benches.forEach(bench => bench.classList.remove('drag-over'));
@@ -320,17 +370,11 @@
                 e.preventDefault();
                 bench.classList.add('drag-over');
             });
-
-            bench.addEventListener('dragleave', () => {
-                bench.classList.remove('drag-over');
-            });
-
+            bench.addEventListener('dragleave', () => bench.classList.remove('drag-over'));
             bench.addEventListener('drop', (e) => {
                 e.preventDefault();
                 const draggingCard = document.querySelector('.dragging');
-                if (draggingCard) {
-                    bench.appendChild(draggingCard);
-                }
+                if (draggingCard) bench.appendChild(draggingCard);
                 bench.classList.remove('drag-over');
             });
         });
