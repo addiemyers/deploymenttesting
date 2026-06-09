@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Little Guide to Claremont Village</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Lato:wght@300;400;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────── */
+    :root {
+      --sage:          #4e7260;
+      --sage-mid:      #6b8f7a;
+      --sage-light:    #a8c4b0;
+      --sage-pale:     #deeee4;
+      --sage-bg:       #edf5ef;
+
+      --cream:         #fdf8f0;
+      --warm-white:    #ffffff;
+      --parchment:     #f2ead8;
+
+      --bark:          #5a3e2b;
+      --bark-dark:     #2e1e10;
+      --bark-mid:      #7a5540;
+
+      --terracotta:    #b5613e;
+      --gold:          #9e7a28;
+
+      --text:          #1e1208;   /* very dark — max contrast on light */
+      --text-mid:      #3d2b18;
+      --text-soft:     #5a4232;
+
+      --card-bg:       #ffffff;
+      --card-border:   rgba(90,62,43,.18);
+
+      --addie-sage:    #3d6b50;
+      --addie-bg:      #e8f2ec;
+      --addie-border:  #9fbfaa;
+      --addie-dark:    #1e3d2a;
+    }
+
+    /* ─── RESET ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    /* ─── HERO ────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 3rem 1.5rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://media.licdn.com/dms/image/v2/D5616AQG2dO04pjf7ng/profile-displaybackgroundimage-shrink_200_800/profile-displaybackgroundimage-shrink_200_800/0/1727223610578?e=2147483647&v=beta&t=O3M9cXzb6tgvkDOWdPx4phP-8-C5Q2nlwdh4f9Eyicg');
+      background-size: cover; background-position: center 40%;
+      filter: brightness(0.28) saturate(0.65);
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 680px; }
+    .hero-eyebrow {
+      font-size: .78rem; font-weight: 700; letter-spacing: .24em;
+      text-transform: uppercase; color: var(--sage-light); margin-bottom: 1.2rem;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      font-weight: 400; color: #d4c4a0; line-height: 1.08; margin-bottom: .5rem;
+    }
+    .hero h1 em { font-style: italic; color: #7fbf96; }
+    .hero h1 .word-village { color: #7fbf96; }
+    .hero-sub {
+      font-family: 'IM Fell English', serif; font-style: italic;
+      color: #a8c4b0; font-size: 1.12rem;
+      margin-top: 1rem; margin-bottom: 2rem;
+    }
+    .hero-divider {
+      width: 120px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--sage-light), transparent);
+      margin: 0 auto 2rem;
+    }
+    .scroll-hint {
+      font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(168,196,176,.65); margin-top: 2.5rem;
+      animation: bob 2.5s ease-in-out infinite;
+    }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+
+    /* ─── NAV ─────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bark-dark);
+      padding: .7rem 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: wrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,.35);
+    }
+    nav a {
+      font-size: .7rem; font-weight: 700; letter-spacing: .13em;
+      text-transform: uppercase; color: rgba(255,255,255,.78);
+      text-decoration: none; padding: .45rem .9rem; border-radius: 2px;
+      transition: color .2s, background .2s;
+    }
+    nav a:hover { color: #fff; background: rgba(255,255,255,.12); }
+    nav a.addie-nav {
+      color: var(--sage-pale);
+      background: rgba(78,114,96,.5);
+      border-radius: 20px;
+    }
+    nav a.addie-nav:hover { background: rgba(78,114,96,.75); color: #fff; }
+    nav .nav-dot { color: rgba(168,196,176,.45); font-size: .45rem; align-self: center; }
+
+    /* ─── SECTION LAYOUT ──────────────────────────────── */
+    .section { max-width: 1100px; margin: 0 auto; padding: 5rem 2rem; }
+
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-tag {
+      display: inline-block; font-size: .68rem; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--warm-white); background: var(--sage);
+      margin-bottom: .9rem; padding: .32rem 1rem; border-radius: 40px;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      font-weight: 400; color: var(--bark-dark); line-height: 1.18;
+    }
+    .section-header p {
+      max-width: 560px; margin: .9rem auto 0;
+      color: var(--text-mid); font-size: .97rem; line-height: 1.7;
+    }
+    .vine-rule {
+      display: flex; align-items: center; gap: .9rem;
+      margin: 1.5rem auto 0; width: fit-content; color: var(--sage-mid); font-size: 1rem;
+    }
+    .vine-rule::before, .vine-rule::after {
+      content:''; display:block; width:55px; height:1px; background:var(--sage-light);
+    }
+
+    /* ─── CARD GRID ────────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px; overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,.13); }
+
+    .card-img {
+      width: 100%; height: 210px; object-fit: cover; display: block;
+      background: var(--sage-pale);
+    }
+    .card-body { padding: 1.4rem 1.6rem 1.7rem; }
+
+    .card-type {
+      font-size: .64rem; font-weight: 700; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--terracotta); margin-bottom: .45rem;
+    }
+    .card-body h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.22rem;
+      font-weight: 600; color: var(--bark-dark); margin-bottom: .5rem; line-height: 1.25;
+    }
+    .card-body p {
+      font-size: .92rem; color: var(--text-mid);
+      margin-bottom: 1.1rem; line-height: 1.65;
+    }
+    .card-meta {
+      font-size: .82rem; color: var(--text-soft);
+      margin-bottom: 1.1rem; display: flex; flex-direction: column; gap: .25rem;
+    }
+    .card-meta span { display: flex; align-items: flex-start; gap: .4rem; }
+    .rating {
+      display: inline-flex; align-items: center; gap: .28rem;
+      font-size: .82rem; color: var(--gold); font-weight: 700;
+    }
+    .btn-maps {
+      display: inline-flex; align-items: center; gap: .45rem;
+      font-size: .73rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: #fff; background: var(--sage);
+      text-decoration: none; padding: .58rem 1.15rem; border-radius: 3px;
+      transition: background .2s;
+    }
+    .btn-maps:hover { background: var(--bark); }
+
+    /* ─── SECTION BG ALTERNATING ─────────────────────── */
+    .bg-white { background: var(--warm-white); }
+    .bg-cream  { background: var(--cream); }
+    .bg-parchment { background: var(--parchment); border-top: 1px solid rgba(90,62,43,.1); border-bottom: 1px solid rgba(90,62,43,.1); }
+
+    /* ─── ADDIE SECTION ──────────────────────────────── */
+    .bg-addie {
+      background: var(--addie-bg);
+      border-top: 3px solid var(--addie-sage);
+      border-bottom: 3px solid var(--addie-sage);
+    }
+    .addie-tag {
+      background: var(--addie-sage) !important;
+      color: #fff !important;
+    }
+    .addie-header h2 { color: var(--addie-dark); }
+    .addie-vine { color: var(--addie-sage) !important; }
+    .addie-vine::before, .addie-vine::after { background: var(--addie-sage) !important; }
+
+    .addie-intro-card {
+      background: #fff; border: 2px solid var(--addie-border);
+      border-radius: 10px; padding: 2rem 2.4rem;
+      text-align: center; max-width: 680px; margin: 0 auto 3.5rem;
+      box-shadow: 0 4px 20px rgba(61,107,80,.1);
+    }
+    .addie-intro-card::before { content:'🌿'; font-size:2rem; display:block; margin-bottom:.75rem; }
+    .addie-intro-card p {
+      font-family: 'IM Fell English', serif; font-style: italic;
+      font-size: 1.08rem; color: var(--addie-dark); line-height: 1.75;
+    }
+    .addie-credit {
+      display: block; margin-top: 1rem;
+      font-size: .72rem; font-weight: 700; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--addie-sage);
+      font-family: 'Lato', sans-serif; font-style: normal;
+    }
+
+    .addie-card { border-color: var(--addie-border) !important; }
+    .addie-card .card-type { color: var(--addie-sage) !important; }
+    .addie-card h3 { color: var(--addie-dark) !important; }
+    .addie-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      background: var(--addie-sage); color: #fff;
+      font-size: .63rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; padding: .28rem .72rem;
+      border-radius: 20px; margin-bottom: .6rem;
+    }
+    .addie-badge .btn-maps { background: var(--addie-sage); }
+    .addie-card .btn-maps { background: var(--addie-sage); }
+    .addie-card .btn-maps:hover { background: var(--addie-dark); }
+
+    /* ─── COLLEGES SECTION ───────────────────────────── */
+    .bg-colleges {
+      background: var(--bark-dark);
+    }
+    .colleges-header .section-tag { background: var(--sage-mid); }
+    .colleges-header h2 { color: #fff; }
+    .colleges-header p { color: rgba(255,255,255,.72); }
+    .colleges-vine { color: var(--sage-light) !important; }
+    .colleges-vine::before, .colleges-vine::after { background: var(--sage-light) !important; }
+
+    /* HMC spotlight */
+    .hmc-spotlight {
+      background: var(--sage);
+      border-radius: 8px; overflow: hidden;
+      margin-bottom: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      box-shadow: 0 8px 32px rgba(0,0,0,.35);
+      min-height: 320px;
+    }
+    .hmc-spotlight > div:first-child { overflow: hidden; display: flex; flex-direction: column; }
+    .hmc-spotlight img {
+      width: 100%; object-fit: cover; display: block;
+    }
+    .hmc-content {
+      padding: 2.5rem 2.5rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .hmc-eyebrow {
+      font-size: .65rem; font-weight: 700; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--sage-pale); margin-bottom: .7rem;
+    }
+    .hmc-content h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.9rem;
+      font-weight: 600; color: #fff; line-height: 1.15; margin-bottom: 1rem;
+    }
+    .hmc-content p { font-size: .92rem; color: rgba(255,255,255,.85); line-height: 1.7; margin-bottom: 1rem; }
+    .hmc-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: .5rem;
+    }
+    .hmc-stat {
+      background: rgba(255,255,255,.12); border-radius: 5px;
+      padding: .75rem 1rem; display: flex; align-items: flex-start; gap: .6rem;
+    }
+    .hmc-stat-num {
+      font-size: 1.4rem; line-height: 1.2; flex-shrink: 0;
+    }
+    .hmc-stat-label { font-size: .78rem; color: rgba(255,255,255,.8); line-height: 1.4; padding-top: .1rem; }
+
+    /* College cards on dark bg */
+    .college-card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 6px; overflow: hidden;
+      transition: transform .25s, background .25s;
+    }
+    .college-card:hover { transform: translateY(-3px); background: rgba(255,255,255,.1); }
+    .college-card img { width:100%; height:180px; object-fit:cover; display:block; }
+    .college-card-body { padding: 1.3rem 1.4rem 1.5rem; }
+    .college-card-type {
+      font-size: .62rem; font-weight: 700; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--sage-light); margin-bottom: .4rem;
+    }
+    .college-card-body h3, .college-card h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.12rem;
+      font-weight: 600; color: #fff; margin-bottom: .5rem; line-height: 1.2;
+    }
+    .college-card p { font-size: .88rem; color: rgba(255,255,255,.72); line-height: 1.6; }
+    .college-card .btn-maps { margin-top: 1rem; background: var(--sage-mid); }
+    .college-card .btn-maps:hover { background: var(--sage); }
+
+    /* ─── STRIP / TIP BOX ─────────────────────────────── */
+    .tip-box {
+      background: var(--sage); color: #fff; border-radius: 6px;
+      padding: 2.2rem 2.5rem; margin: 5rem auto; max-width: 800px; text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,.12);
+    }
+    .tip-box h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.45rem;
+      font-weight: 400; margin-bottom: .65rem;
+    }
+    .tip-box p { font-size: .95rem; opacity: .9; line-height: 1.7; }
+
+    /* ─── MAP ─────────────────────────────────────────── */
+    .map-strip { width:100%; height:340px; border:0; display:block; filter:sepia(.15) saturate(.9); }
+
+    /* ─── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: var(--bark-dark); color: rgba(255,255,255,.55);
+      text-align: center; padding: 2.5rem 2rem; font-size: .83rem;
+    }
+    footer a { color: var(--sage-light); text-decoration: none; }
+    footer .footer-title {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1.05rem; color: rgba(255,255,255,.75); margin-bottom: .6rem;
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 700px) {
+      .hmc-spotlight { grid-template-columns: 1fr; }
+      .hmc-spotlight img { height: 220px; }
+      nav { gap: .2rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      .tip-box, .addie-intro-card { padding: 1.5rem 1.2rem; }
+      .section { padding: 3.5rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ HERO ════════════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Your pocket guide to</p>
+    <h1>The <em>Village</em><br>at Claremont</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">Charming streets, independent shops, art tucked<br>into old buildings &amp; coffee worth lingering over.</p>
+    <p class="scroll-hint">↓ &nbsp; scroll to explore</p>
+  </div>
+</header>
+
+<!-- ════ NAV ═════════════════════════════════════════════ -->
+<nav>
+  <a href="#addie" class="addie-nav">⭐ Addie's Picks</a>
+  <span class="nav-dot">✦</span>
+  <a href="#eat-drink">Eat &amp; Drink</a>
+  <span class="nav-dot">✦</span>
+  <a href="#shops">Shops</a>
+  <span class="nav-dot">✦</span>
+  <a href="#colleges">The Colleges</a>
+  <span class="nav-dot">✦</span>
+  <a href="#museums">Museums &amp; Art</a>
+  <span class="nav-dot">✦</span>
+  <a href="#outdoors">Nature</a>
+  <span class="nav-dot">✦</span>
+  <a href="#tips">Local Tips</a>
+</nav>
+
+<!-- ════ ADDIE'S PICKS ═══════════════════════════════════ -->
+<div id="addie" class="bg-addie">
+<section class="section">
+  <div class="section-header addie-header">
+    <span class="section-tag addie-tag">⭐ Addie's Recommendations</span>
+    <h2>Curated by a local who knows</h2>
+    <p style="color:var(--addie-dark);">Straight from someone who has eaten here way too many times.</p>
+    <div class="vine-rule addie-vine">✿</div>
+  </div>
+
+  <div class="addie-intro-card">
+    <p>High achieving academic, bored out of her mind, Addie, recommends you walk around and admire the beauty of her prison that confines her 10 months out of the year 🫶 Just kidding, hope you guys enjoy Claremont</p>
+  </div>
+
+  <div class="card-grid">
+
+    <div class="card addie-card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2023/04/crepesofwrathclaremont-Instagram-3665-ig-17925813218638078.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1519676867240-f03562e64548?w=600&q=80'" alt="Crepes of Wrath" />
+      <div class="card-body">
+        <div class="addie-badge">⭐ Addie's Pick</div>
+        <div class="card-type">Crêperie · Sweet &amp; Savory</div>
+        <h3>Crepes of Wrath</h3>
+        <p>A pint-sized counter on Bonita Ave where you watch your crêpe come to life. The Nutella-strawberry-banana is the crowd favourite; the raspberry lemon is the sleeper hit. Order both.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 9 am – 9 pm</span>
+          <span><span class="rating">★ 4.1</span> &nbsp;254 W Bonita Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Crepes+of+Wrath+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card addie-card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2020/01/Dr.-Grubb_s-Salmon-Steak-700x520.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80'" alt="Dr Grubbs" />
+      <div class="card-body">
+        <div class="addie-badge">⭐ Addie's Pick</div>
+        <div class="card-type">California Fresh · Bowls &amp; Grills</div>
+        <h3>Dr. Grubb's</h3>
+        <p>Healthy California cuisine done right — grilled proteins, customizable bowls, and a jalapeño garlic sauce that genuinely cures what ails you. Fresh food, fast, even at the lunch rush.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 10–9, Fri–Sat 10–10, Sun 10–9</span>
+          <span><span class="rating">★ 4.6</span> &nbsp;373 W Bonita Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Dr+Grubbs+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card addie-card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2020/01/IMG_6187-2.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1585378929254-eb0c5da16787?w=600&q=80'" alt="42nd Street Bagel" />
+      <div class="card-body">
+        <div class="addie-badge">⭐ Addie's Pick</div>
+        <div class="card-type">Bagels · Coffee · Breakfast</div>
+        <h3>42nd Street Bagel Cafe</h3>
+        <p>Family-owned, genuinely artisanal bagels. The jalapeño cheese bagel with lox is the order. Grab it with a mocha on the outdoor patio and you've nailed the Claremont morning.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 7 am – 3 pm</span>
+          <span><span class="rating">★ 4.5</span> &nbsp;225 N Yale Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=42nd+Street+Bagel+Cafe+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card addie-card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2024/08/Screen-Shot-2025-11-04-at-1.47.10-PM.png"
+           onerror="this.src='https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80'" alt="Daddy Ji's Indian" />
+      <div class="card-body">
+        <div class="addie-badge">⭐ Addie's Pick</div>
+        <div class="card-type">Indian · Street Food · Cozy</div>
+        <h3>Daddy Ji's</h3>
+        <p>Born as a beloved food truck, now a warm sit-down spot. Samosa chaat, house tikka, cheese naan, and a mango lassi that ties it all together. A mural of the original truck greets you at the door.</p>
+        <div class="card-meta">
+          <span>🕐 Tue–Sun 11 am – 10 pm (Closed Mon)</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;201 N Indian Hill Blvd</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Daddy+Ji+Indian+Cuisine+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card addie-card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2022/11/bertandrockyscreamco-Instagram-3665-ig-17864718680463789.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&q=80'" alt="Bert and Rockys" />
+      <div class="card-body">
+        <div class="addie-badge">⭐ Addie's Pick</div>
+        <div class="card-type">Artisan Ice Cream · Candy Shop</div>
+        <h3>Bert &amp; Rocky's Cream Co.</h3>
+        <p>A Claremont institution since 1989. Over 200 homemade flavors, fresh daily waffle cones, caramel apples, vintage bulk candy, and the Kauai Pie locals swear by. The perfect final stop on any Village walk.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 12–9, Fri–Sat 12–10, Sun 12–9</span>
+          <span><span class="rating">★ 4.5</span> &nbsp;242 N Yale Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Bert+and+Rockys+Cream+Company+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- ════ EAT & DRINK ═════════════════════════════════════ -->
+<div id="eat-drink" class="bg-white">
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag">Eat &amp; Drink</span>
+    <h2>Tables worth pulling up a chair to</h2>
+    <p>From craft coffee in a century-old packing house to late-night izakaya skewers, the Village feeds you well.</p>
+    <div class="vine-rule">✿</div>
+  </div>
+  <div class="card-grid">
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2020/01/discover-claremont-village-grille-50s-diner-Instagram-3665-ig-17882129941702789.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80'" alt="Village Grille" />
+      <div class="card-body">
+        <div class="card-type">Diner · Breakfast &amp; Lunch</div>
+        <h3>Village Grille</h3>
+        <p>Claremont's original '50s diner, complete with "I Love Lucy" décor and a server named Shelly who keeps the coffee coming. The eggs Benedict and French toast are the local orders to beat.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 7 am – 3 pm</span>
+          <span><span class="rating">★ 4.5</span> &nbsp;148 N Yale Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Village+Grille+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2020/01/Dr.-Grubb_s-Salmon-Steak-700x520.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80'" alt="Dr Grubbs" />
+      <div class="card-body">
+        <div class="card-type">California Fresh · Bowls &amp; Grills</div>
+        <h3>Dr. Grubb's</h3>
+        <p>Healthy California cuisine done right — grilled proteins, customizable bowls, and a jalapeño garlic sauce that genuinely cures what ails you. Fresh and fast even at the lunch rush.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 10–9, Fri–Sat 10–10, Sun 10–9</span>
+          <span><span class="rating">★ 4.6</span> &nbsp;373 W Bonita Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Dr+Grubbs+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2020/01/IMG_6187-2.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1585378929254-eb0c5da16787?w=600&q=80'" alt="42nd Street Bagels" />
+      <div class="card-body">
+        <div class="card-type">Bagels · Coffee · Breakfast</div>
+        <h3>42nd Street Bagel Cafe</h3>
+        <p>Family-owned, genuinely artisanal bagels. The jalapeño cheese with lox is the order. Outdoor patio, friendly staff, open early enough to fuel your Sunday farmers market stroll.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 7 am – 3 pm</span>
+          <span><span class="rating">★ 4.5</span> &nbsp;225 N Yale Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=42nd+Street+Bagel+Cafe+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2023/04/crepesofwrathclaremont-Instagram-3665-ig-17925813218638078.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1519676867240-f03562e64548?w=600&q=80'" alt="Crepes of Wrath" />
+      <div class="card-body">
+        <div class="card-type">Crêperie · Sweet &amp; Savory</div>
+        <h3>Crepes of Wrath</h3>
+        <p>A pint-sized counter where you watch your crêpe being made. Nutella-strawberry-banana is the crowd favourite; the build-your-own savory crêpe is great for customizers. Friendly, fast, and Instagram-ready.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 9 am – 9 pm</span>
+          <span><span class="rating">★ 4.1</span> &nbsp;254 W Bonita Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Crepes+of+Wrath+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2022/11/bertandrockyscreamco-Instagram-3665-ig-17864718680463789.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&q=80'" alt="Bert and Rockys" />
+      <div class="card-body">
+        <div class="card-type">Artisan Ice Cream · Candy Shop</div>
+        <h3>Bert &amp; Rocky's Cream Co.</h3>
+        <p>A Claremont institution since 1989 — over 200 homemade flavors, fresh waffle cones daily, caramel apples, and vintage bulk candy. The Kauai Pie is what locals order. Perfect last stop.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 12–9, Fri–Sat 12–10, Sun 12–9</span>
+          <span><span class="rating">★ 4.5</span> &nbsp;242 N Yale Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Bert+and+Rockys+Cream+Company+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2024/08/Screen-Shot-2025-11-04-at-1.47.10-PM.png"
+           onerror="this.src='https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80'" alt="Daddy Ji's" />
+      <div class="card-body">
+        <div class="card-type">Indian · Street Food · Cozy</div>
+        <h3>Daddy Ji's</h3>
+        <p>Born as a beloved food truck, now a warm sit-down restaurant. Samosa chaat, house tikka, cheese naan, and a mango lassi that ties it all together. A mural of the original truck greets you at the door.</p>
+        <div class="card-meta">
+          <span>🕐 Tue–Sun 11 am – 10 pm (Closed Mon)</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;201 N Indian Hill Blvd</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Daddy+Ji+Indian+Cuisine+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" alt="Iron and Kin Coffee" />
+      <div class="card-body">
+        <div class="card-type">Coffee · Packing House</div>
+        <h3>Iron &amp; Kin Coffee Co.</h3>
+        <p>A sleek, wood-lined café inside the historic Packing House. The Worthy Latte — brown sugar, vanilla, fig, black pepper — is the drink locals can't quit. Lines move fast, staff is warm.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 7 am – 5 pm</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;536 W 1st St</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Iron+%26+Kin+Coffee+Co+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80" alt="Kozu Izakaya" />
+      <div class="card-body">
+        <div class="card-type">Japanese · Izakaya · Dinner</div>
+        <h3>Kozu Izakaya</h3>
+        <p>Intimate and lantern-warm, Kozu brings genuine izakaya energy — enoki-bacon skewers, curated sake, staff who love what they're pouring. Get there when the doors open on weekends.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 5–11 pm · Fri–Sun 4–11 pm</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;175 N Indian Hill Blvd #102b</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Kozu+Izakaya+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&q=80" alt="La Popular" />
+      <div class="card-body">
+        <div class="card-type">Mexican · Cocktails</div>
+        <h3>La Popular</h3>
+        <p>Mexico City-inspired and unmistakably lively. Tableside guacamole, short-rib enchiladas, and a late-night happy hour that starts at 9 pm on weeknights. The chorizo queso fundido is non-negotiable.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 11 am–11 pm (Fri–Sat til midnight)</span>
+          <span><span class="rating">★ 4.0</span> &nbsp;235 N Yale Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=La+Popular+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="Eureka Claremont" />
+      <div class="card-body">
+        <div class="card-type">American · Craft Beer</div>
+        <h3>Eureka! Claremont</h3>
+        <p>Corner spot with mountain views, an inventive burger menu, and truffle fries with their own fan club. The Black Tuesday Imperial Stout is 19.5% ABV — pace yourself.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 11 am–midnight (Fri–Sat til 1 am)</span>
+          <span><span class="rating">★ 4.5</span> &nbsp;580 W 1st St</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Eureka+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2015/10/DiscoverClaremont-All097-1920x6001.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&q=80'" alt="Farmers Market" />
+      <div class="card-body">
+        <div class="card-type">Farmers Market · Sundays Only</div>
+        <h3>Claremont Farmers &amp; Artisans Market</h3>
+        <p>The IE's largest weekly certified farmers market, every Sunday on Harvard Ave. Fresh produce, baked goods, crafts, live music — proceeds support the Prison Library Project. A true Village ritual.</p>
+        <div class="card-meta">
+          <span>🕐 Sundays 8 am – 1 pm, rain or shine</span>
+          <span><span class="rating">★ 4.6</span> &nbsp;Harvard Ave (Bonita to 1st St)</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Claremont+Farmers+Artisans+Market+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- ════ SHOPS ════════════════════════════════════════════ -->
+<div id="shops" class="bg-parchment">
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag">Shopping</span>
+    <h2>Small shops worth slowing down for</h2>
+    <p>The Village runs on independents. No chains — just owners who know your name after one visit.</p>
+    <div class="vine-rule">✿</div>
+  </div>
+  <div class="card-grid">
+
+    <div class="card">
+      <img class="card-img" src="https://discoverclaremont.com/wp-content/uploads/2020/01/claremont-packing-house.jpg"
+           onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80'" alt="Claremont Packing House" />
+      <div class="card-body">
+        <div class="card-type">Market Hall · Historic · 1920s</div>
+        <h3>Claremont Packing House</h3>
+        <p>A 1920s citrus packing house turned airy marketplace of boutiques, a cooking studio, kids' art space, restaurants, and Iron &amp; Kin coffee. The beating heart of the Village.</p>
+        <div class="card-meta">
+          <span>🕐 Daily 6 am – 11 pm</span>
+          <span><span class="rating">★ 4.6</span> &nbsp;532 W 1st St</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Claremont+Packing+House+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600&q=80" alt="Susa Boutique" />
+      <div class="card-body">
+        <div class="card-type">Women's Fashion · Perfect-Fit Promise</div>
+        <h3>Susa Boutique</h3>
+        <p>Owner Morgan sources from Italy, France, and Scotland, with a seamstress on-site. Five stars across every review. They'll pull pieces you'd never reach for yourself — and prove you wrong.</p>
+        <div class="card-meta">
+          <span>🕐 Mon/Wed–Sat 11–5 or 6</span>
+          <span><span class="rating">★ 5.0</span> &nbsp;140 N Indian Hill Blvd</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Susa+Boutique+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80" alt="Maison Garrison" />
+      <div class="card-body">
+        <div class="card-type">Women's Boutique</div>
+        <h3>Maison Garrison</h3>
+        <p>Classy, jazzy, and priced like the owner wants you to come back — because she does. Reviewers consistently rave about the jeans. Owner Shirley brings genuine styling instinct to every visit.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 10–5, Fri 10–6, Sat 10–7, Sun 10–4</span>
+          <span><span class="rating">★ 4.9</span> &nbsp;323 W Bonita Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Maison+Garrison+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80" alt="The Giving" />
+      <div class="card-body">
+        <div class="card-type">Boutique · Give-Back Model</div>
+        <h3>The Giving</h3>
+        <p>Laid-back, beachy, and genuinely unique jewelry and clothing — a portion of every sale supports a cause. Pat and the team provide the kind of attentive help that makes you want to return.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 12–6, Fri–Sat 11–8, Sun 12–6</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;526 W 1st St (Packing House)</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=The+Giving+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80" alt="Nectar Clothing" />
+      <div class="card-body">
+        <div class="card-type">Boutique Fashion</div>
+        <h3>Nectar Clothing</h3>
+        <p>Trendy without the sticker shock. A Village staple that gives discounts to local workers and keeps a rotating selection of dresses, rompers, and accessories. Great for a spontaneous night-out find.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 10–7, Fri–Sat 10–8, Sun 11–6</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;319 W 1st St</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Nectar+Clothing+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&q=80" alt="Amelie Boutique" />
+      <div class="card-body">
+        <div class="card-type">Clothing · Candles · Hidden Gem</div>
+        <h3>Amelie</h3>
+        <p>The candles smell extraordinary and the staff make a ten-minute stop feel like a proper visit. A newer shop already building a devoted following among Village regulars.</p>
+        <div class="card-meta">
+          <span>🕐 Mon–Thu 11–7, Fri–Sat 10–8, Sun 10–5</span>
+          <span><span class="rating">★ 4.6</span> &nbsp;132 N Yale Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Amelie+Boutique+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- ════ CLAREMONT COLLEGES ══════════════════════════════ -->
+<div id="colleges" class="bg-colleges">
+<section class="section">
+  <div class="section-header colleges-header">
+    <span class="section-tag">The Claremont Colleges</span>
+    <h2>Seven colleges, one square mile</h2>
+    <p>The Village wraps around one of the most unusual academic communities in the country — five undergraduate colleges and two graduate schools sharing a single campus smaller than many city parks.</p>
+    <div class="vine-rule colleges-vine">✿</div>
+  </div>
+
+  <!-- HMC SPOTLIGHT -->
+  <div class="hmc-spotlight">
+    <div style="display:flex; flex-direction:column; overflow:hidden;">
+      <img src="https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1159_01-13:11_Harvey_Mudd_College.jpeg"
+           alt="Harvey Mudd College campus" style="width:100%; height:107px; object-fit:cover; display:block;" />
+      <img src="https://www.steinberghart.com/wp-content/uploads/2024/11/SH_HMC-McGregorCSC_ExteriorNight_RGB-scaled.jpg"
+           onerror="this.src='https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1159_01-13:11_Harvey_Mudd_College.jpeg'"
+           alt="Harvey Mudd McGregor Computer Science Center" style="width:100%; height:107px; object-fit:cover; display:block; border-top:2px solid rgba(255,255,255,.2);" />
+      <img src="https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1158_02-11:25_Claremont_McKenna_College.jpeg"
+           onerror="this.src='https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1159_01-13:11_Harvey_Mudd_College.jpeg'"
+           alt="Claremont Colleges campus" style="width:100%; height:107px; object-fit:cover; display:block; border-top:2px solid rgba(255,255,255,.2);" />
+    </div>
+    <div class="hmc-content">
+      <p class="hmc-eyebrow">⭐ Featured College</p>
+      <h3>Harvey Mudd College</h3>
+      <p>Harvey Mudd was founded in 1955 at a very particular moment in American anxiety. The Cold War was escalating, the Soviet Union was pulling ahead in the space race, and the US was suddenly, urgently aware that it didn't have enough engineers and scientists. Congress would pass the National Defense Education Act in 1958; Harvey Mudd opened three years earlier with the same panic driving it — a private answer to a national problem.</p>
+      <p>But its founders added an unusual twist: they insisted that engineers who couldn't communicate, reason ethically, or understand history were a danger as much as a resource. So one-third of every student's coursework is permanently devoted to the humanities and social sciences. The college was named for Harvey Seeley Mudd, a mining magnate who helped fund it — though he died before it ever opened its doors.</p>
+      <p>On clear days, students can see the Pacific Ocean from the north end of campus. Despite having fewer than 1,000 students, HMC produces more PhD graduates per capita than virtually any other undergraduate institution in the country.</p>
+
+      <div style="background:rgba(255,255,255,.1); border-radius:8px; padding:1.4rem 1.6rem; margin-top:.5rem; border-left: 3px solid var(--sage-light);">
+        <p style="font-size:.78rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--sage-pale); margin-bottom:.6rem;">🎭 The Caltech Prank Wars</p>
+        <p style="font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.65; margin:0;">Harvey Mudd and Caltech — 35 miles apart — have maintained one of the great inter-college prank rivalries in American history. Mudders have stolen Caltech's cannon (twice), hacked their scoreboard at the Rose Bowl to read "CALTECH" during a USC game, and on one occasion reassembled a car on the roof of a campus building. Caltech has returned in kind. The pranks are elaborate, technically impressive, and governed by an unspoken code: no permanent damage, no one gets hurt, and the better prank wins. Faculty tend to look the other way.</p>
+      </div>
+
+      <div class="hmc-stats" style="margin-top:1rem;">
+        <div class="hmc-stat">
+          <div class="hmc-stat-num">🚀</div>
+          <div class="hmc-stat-label">Founded to answer the Space Race — three years before Sputnik panic hit Congress</div>
+        </div>
+        <div class="hmc-stat">
+          <div class="hmc-stat-num">🎓</div>
+          <div class="hmc-stat-label">More PhDs per capita than almost any other US undergrad college</div>
+        </div>
+        <div class="hmc-stat">
+          <div class="hmc-stat-num">📚</div>
+          <div class="hmc-stat-label">⅓ of every degree is humanities — permanently baked into the curriculum</div>
+        </div>
+        <div class="hmc-stat">
+          <div class="hmc-stat-num">🏔️</div>
+          <div class="hmc-stat-label">Pacific Ocean visible from campus on a clear day</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HMC THINGS TO SEE -->
+  <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:400; color:#fff; text-align:center; margin-bottom: 2rem; opacity:.85;">Things to see at &amp; near Harvey Mudd</h3>
+
+  <div class="card-grid" style="margin-bottom: 3.5rem;">
+
+    <div class="college-card">
+      <img src="https://images.unsplash.com/photo-1518050947974-4be8c7469f0c?w=600&q=80" alt="James Turrell Skyspace" />
+      <div class="college-card-body card-body">
+        <div class="college-card-type card-type">Public Art · Free · On HMC Campus</div>
+        <h3>James Turrell Skyspace</h3>
+        <p>A free, open-to-the-public light installation on Harvey Mudd's campus by one of the world's most important living artists. At sunrise and sunset the piece transitions through colors that feel impossible. Dogs welcome. Go slowly.</p>
+        <a class="btn-maps" href="https://maps.google.com/?q=James+Turrell+Skyspace+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="college-card">
+      <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=80" alt="HMC Campus Walk" />
+      <div class="college-card-body card-body">
+        <div class="college-card-type card-type">Campus Life · Open to All</div>
+        <h3>Walk the Campus</h3>
+        <p>Harvey Mudd's campus is compact, beautiful, and open to visitors. The architecture is mid-century modern, and the mountain views from the north end of campus are some of the best in the region. Walk freely and soak it in.</p>
+        <a class="btn-maps" href="https://maps.google.com/?q=Harvey+Mudd+College+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="college-card">
+      <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80" alt="Claremont Colleges Library" />
+      <div class="college-card-body card-body">
+        <div class="college-card-type card-type">Shared Resource · All 7 Colleges</div>
+        <h3>The Claremont Colleges Library</h3>
+        <p>All seven colleges share a single library system with over two million volumes. Students can cross-enroll in classes at any college, eat at any dining hall, and access five swimming pools and four fitness centers — a remarkable collegiate ecosystem.</p>
+        <a class="btn-maps" href="https://maps.google.com/?q=Claremont+Colleges+Library+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- The other 4 colleges -->
+  <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:400; color:#fff; text-align:center; margin-bottom: 2rem; opacity:.85;">The other four undergraduate colleges</h3>
+
+  <div class="card-grid">
+
+    <div class="college-card">
+      <img src="https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1161_01-12:10_Pomona_College.jpeg"
+           alt="Pomona College campus" />
+      <div class="college-card-body card-body">
+        <div class="college-card-type card-type">Founded 1887 · Liberal Arts</div>
+        <h3>Pomona College</h3>
+        <p>The oldest and largest of the five undergraduate colleges, consistently ranked among the top liberal arts schools in the country. Home to the free Benton Museum of Art and gorgeous craftsman-influenced campus architecture.</p>
+        <a class="btn-maps" href="https://maps.google.com/?q=Pomona+College+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="college-card">
+      <img src="https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1158_02-11:25_Claremont_McKenna_College.jpeg"
+           alt="Claremont McKenna College campus" />
+      <div class="college-card-body card-body">
+        <div class="college-card-type card-type">Founded 1946 · Government &amp; Economics</div>
+        <h3>Claremont McKenna College</h3>
+        <p>Known for its programs in government, economics, and public affairs. CMC has an unusually strong alumni network in finance, law, and public policy, and runs a number of prestigious research institutes on campus.</p>
+        <a class="btn-maps" href="https://maps.google.com/?q=Claremont+McKenna+College+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="college-card">
+      <img src="https://images.shiksha.com/mediadata/images/1550033873phpThPQEM.png"
+           alt="Scripps College campus" />
+      <div class="college-card-body card-body">
+        <div class="college-card-type card-type">Founded 1926 · Women's College</div>
+        <h3>Scripps College</h3>
+        <p>A women's liberal arts college with one of the most beautiful campuses in Southern California — Spanish Colonial Revival architecture, wisteria-draped courtyards, and an exceptional humanities program.</p>
+        <a class="btn-maps" href="https://maps.google.com/?q=Scripps+College+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="college-card">
+      <img src="https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1160_05-18:49_pppp.jpeg"
+           alt="Pitzer College campus" />
+      <div class="college-card-body card-body">
+        <div class="college-card-type card-type">Founded 1963 · Social Responsibility</div>
+        <h3>Pitzer College</h3>
+        <p>The youngest of the five undergrad colleges, known for its progressive ethos, social responsibility focus, and strong social sciences. Pitzer has one of the highest study-abroad participation rates in the country.</p>
+        <a class="btn-maps" href="https://maps.google.com/?q=Pitzer+College+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- ════ MUSEUMS & ART ════════════════════════════════════ -->
+<div id="museums" class="bg-white">
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag">Museums &amp; Art</span>
+    <h2>Where art lives in Claremont</h2>
+    <p>Between the Colleges and the Depot, you'll find more art per square mile than almost anywhere in the Inland Empire.</p>
+    <div class="vine-rule">✿</div>
+  </div>
+  <div class="card-grid">
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1566127992631-137a642a90f4?w=600&q=80" alt="Claremont Lewis Museum of Art" />
+      <div class="card-body">
+        <div class="card-type">Art Museum · Historic 1927 Depot</div>
+        <h3>Claremont Lewis Museum of Art</h3>
+        <p>Set inside the 1927 Santa Fe Railroad Depot — a beautiful building in its own right. Rotating contemporary and historical exhibitions, free or low-cost admission. Pairs perfectly with the Sunday farmers market next door.</p>
+        <div class="card-meta">
+          <span>🕐 Thu 12–4, Fri 12–7, Sat 12–4, Sun 10–4</span>
+          <span><span class="rating">★ 4.4</span> &nbsp;200 W 1st St (inside the Depot)</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Claremont+Lewis+Museum+of+Art+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://image-static.collegedunia.com/public/college_data/images/studyabroad/appImage/college_1161_01-12:10_Pomona_College.jpeg"
+           alt="Benton Museum of Art at Pomona College" />
+      <div class="card-body">
+        <div class="card-type">Museum · Pomona College · Free</div>
+        <h3>Benton Museum of Art</h3>
+        <p>Free admission and a sculpture garden make this the Village's most accessible art experience. Student curators from Pomona shape the rotating shows — programming tends to be fresh and surprising.</p>
+        <div class="card-meta">
+          <span>🕐 Thu 11–8, Fri–Sun 11–6 (Closed Mon–Wed)</span>
+          <span><span class="rating">★ 4.5</span> &nbsp;120 W Bonita Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Benton+Museum+of+Art+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1518050947974-4be8c7469f0c?w=600&q=80" alt="James Turrell Skyspace" />
+      <div class="card-body">
+        <div class="card-type">Public Art · Free · Harvey Mudd Campus</div>
+        <h3>James Turrell Skyspace</h3>
+        <p>A free light installation by one of the world's most significant living artists. At sunrise and sunset the piece transitions through colors that feel impossible — reviewers call it "emotionally like a Rothko." Dogs welcome.</p>
+        <div class="card-meta">
+          <span>🕐 Open access · best at dawn &amp; dusk</span>
+          <span><span class="rating">★ 4.6</span> &nbsp;600 N College Way (Harvey Mudd)</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=James+Turrell+Skyspace+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1564399580075-5dfe19c205f3?w=600&q=80" alt="Alf Museum of Paleontology" />
+      <div class="card-body">
+        <div class="card-type">Natural History · Great for Kids</div>
+        <h3>Raymond M. Alf Museum of Paleontology</h3>
+        <p>The only nationally accredited paleontology museum on a secondary school campus — Webb School students actually collected the fossils on display. Interactive downstairs exhibits let kids touch real specimens. $12 entry; bring your ID.</p>
+        <div class="card-meta">
+          <span>🕐 Wed–Fri 11–5, Sat 10–5</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;1175 Base Line Rd</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Alf+Museum+of+Paleontology+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- ════ NATURE & OUTDOORS ════════════════════════════════ -->
+<div id="outdoors" class="bg-parchment">
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag">Nature &amp; Outdoors</span>
+    <h2>Where the foothills begin</h2>
+    <p>Claremont sits at the base of the San Gabriel Mountains. You're never more than a few minutes from a trail or a garden.</p>
+    <div class="vine-rule">✿</div>
+  </div>
+  <div class="card-grid">
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="California Botanic Garden" />
+      <div class="card-body">
+        <div class="card-type">Botanical Garden · 86 Acres · Trails</div>
+        <h3>California Botanic Garden</h3>
+        <p>The largest garden in the US dedicated entirely to California native plants. On overcast days, low-hanging mountain mist drifts through the arroyos and makes it feel otherworldly. Squirrels, turtles, lizards, rabbits. $15 admission.</p>
+        <div class="card-meta">
+          <span>🕐 Tue–Sun 8 am – 8 pm (Closed Monday)</span>
+          <span><span class="rating">★ 4.7</span> &nbsp;1500 N College Ave</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=California+Botanic+Garden+Claremont+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=80" alt="Claremont Hills Wilderness Park" />
+      <div class="card-body">
+        <div class="card-type">Hiking · Free · Dog-Friendly</div>
+        <h3>Claremont Hills Wilderness Park</h3>
+        <p>2,500+ acres of open chaparral in the San Gabriel foothills with sweeping views — on clear days, all the way to the Pacific. Trails range from flat fire roads to steep single-track. Free, dawn to dusk.</p>
+        <div class="card-meta">
+          <span>🕐 Dawn – Dusk daily</span>
+          <span>📍 N Mills Ave at the top of the hill</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Claremont+Hills+Wilderness+Park+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80" alt="Village Stroll" />
+      <div class="card-body">
+        <div class="card-type">Architecture Walk · Historic</div>
+        <h3>The Village Stroll</h3>
+        <p>The most pleasurable thing in Claremont is simply walking. Tree-lined Harvard Ave, the brick paths of the Packing House, craftsman homes on surrounding streets — one of the best walkable downtowns in Southern California. Start at the 1927 Depot.</p>
+        <div class="card-meta">
+          <span>🕐 Anytime</span>
+          <span>📍 Start: 200 W 1st St (the Depot)</span>
+        </div>
+        <a class="btn-maps" href="https://maps.google.com/?q=Claremont+Depot+CA" target="_blank" rel="noopener">↗ Open in Maps</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- MAP -->
+<iframe class="map-strip" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3314.0!2d-117.72!3d34.0955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c331c2c23112ef%3A0x95a9261c4b72e1e1!2sClaremont%20Village%2C%20Claremont%2C%20CA!5e0!3m2!1sen!2sus!4v1"
+  title="Claremont Village Map"></iframe>
+
+<!-- ════ LOCAL TIPS ════════════════════════════════════════ -->
+<div id="tips" class="bg-white">
+<section class="section">
+  <div class="section-header">
+    <span class="section-tag">Local Tips</span>
+    <h2>A few things to know before you go</h2>
+    <div class="vine-rule">✿</div>
+  </div>
+  <div class="card-grid">
+
+    <div class="card">
+      <img class="card-img" style="height:150px;" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&q=80" alt="Parking" />
+      <div class="card-body">
+        <div class="card-type">Getting Here</div>
+        <h3>Parking &amp; Transit</h3>
+        <p>Street parking on 1st St and surrounding blocks is generally free and easy on weekdays. Weekends, use the free lot behind the Packing House. The Metrolink San Bernardino Line stops right at the Depot — a scenic, stress-free ride from LA Union Station.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" style="height:150px;" src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&q=80" alt="Sunday morning" />
+      <div class="card-body">
+        <div class="card-type">Best Times</div>
+        <h3>When to Visit</h3>
+        <p>Sunday mornings are magical — the farmers market runs 8 am to 1 pm, shops open at 10, and the botanic garden is at its best in cool morning light. October through April the air is crisp and the mountains are often snow-capped.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img class="card-img" style="height:150px;" src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=600&q=80" alt="College campus" />
+      <div class="card-body">
+        <div class="card-type">College Town Energy</div>
+        <h3>Student Discounts</h3>
+        <p>Many Village shops and restaurants offer discounts to Claremont Colleges students — always worth asking. Campus buildings are beautiful and generally open to walkers. Check the colleges' event calendars for free lectures, performances, and gallery openings.</p>
+      </div>
+    </div>
+
+    <!-- ADDIE'S TIP CARD -->
+    <div class="card" style="border:2px solid var(--addie-border); background:var(--addie-bg);">
+      <div style="background:linear-gradient(135deg, var(--sage-bg), var(--addie-bg)); height:150px; display:flex; align-items:center; justify-content:center; font-size:3.5rem;">🌿</div>
+      <div class="card-body">
+        <div class="card-type" style="color:var(--addie-sage);">From a Local</div>
+        <h3 style="color:var(--addie-dark); font-style:italic;">Addie's Village Wisdom</h3>
+        <p style="color:var(--addie-dark);">High achieving academic, bored out of her mind, Addie, recommends you walk around and admire the beauty of her prison that confines her 10 months out of the year 🫶 Just kidding, hope you guys enjoy Claremont</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- ════ FOOTER ═══════════════════════════════════════════ -->
+<footer>
+  <p class="footer-title">A little guide to a very charming town.</p>
+  <p>Hours and details change — always worth a quick check before heading out. &nbsp;✦&nbsp; Made with care for the Claremont community.</p>
+  <p style="margin-top:1rem;">
+    <a href="https://maps.google.com/?q=Claremont+Village+CA" target="_blank" rel="noopener">View all on Google Maps ↗</a>
+  </p>
+</footer>
+
+</body>
+</html>
